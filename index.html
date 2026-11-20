@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Ludo</title>
+</head>
+<body>
+  <!--
+    ESQUELETO DA TELA (contrato da seção 3 do PLANEJAMENTO.md).
+    Elementos fixos, VAZIOS: sem texto, sem valor e sem atributos de estado
+    (data-casa, data-movel, disabled, hidden). Os testes abrem este HTML.
+    Os peões (peao-<cor>-<n>) seriam criados pelo jogo, que não é implementado.
+  -->
+  <header>
+    <span data-testid="vez"></span>
+    <span data-testid="dado"></span>
+    <button data-testid="btn-rolar"></button>
+    <button data-testid="btn-nova-partida"></button>
+  </header>
+  <main>
+    <div data-testid="tabuleiro"></div>
+  </main>
+  <footer>
+    <span data-testid="chegada-vermelho"></span>
+    <span data-testid="chegada-amarelo"></span>
+    <p data-testid="mensagem"></p>
+  </footer>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>
