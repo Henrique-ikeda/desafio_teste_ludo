@@ -36,6 +36,14 @@ test('TC-LD-08 só peão que pode andar se mexe', async () => {
   expect(peao('vermelho', 2)).toHaveAttribute('data-casa', 'base');
   expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'true');
   expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'c1');
+  // Peões não citados: vermelhos 3 e 4 também não podem sair com 4; amarelos seguem na base.
+  for (const n of [3, 4]) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-movel', 'false');
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+  for (const n of [1, 2, 3, 4]) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
+  }
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
   expect(screen.getByTestId('btn-rolar')).toBeDisabled();
 });
