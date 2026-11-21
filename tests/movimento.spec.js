@@ -91,3 +91,25 @@ test('TC-LD-10 vermelho entra na reta final', async () => {
   }
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
 });
+
+// TC-LD-11: Amarelo joga, amarelo 1 em c24, dado 3: c25, a1, a2 (o Amarelo não usa c26).
+const PARAMS_AMARELO_RETA_FINAL = { vez: 'amarelo', amarelo: 'c24,base,base,base', dados: '3' };
+
+test('TC-LD-11 amarelo entra na reta final', async () => {
+  // Amarelo 1 em c24 com dado 3 passa por c25 e entra em a1, a2 (não c27 nem c26).
+  const user = await abrirJogo(PARAMS_AMARELO_RETA_FINAL);
+  await rolar(user);
+
+  expect(peao('amarelo', 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('amarelo', 1));
+
+  expect(peao('amarelo', 1)).toHaveAttribute('data-casa', 'a2');
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
+  }
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+});
