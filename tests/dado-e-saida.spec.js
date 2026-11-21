@@ -87,3 +87,26 @@ test('TC-LD-03 sem 6 não sai da base', async () => {
     }
   }
 });
+
+test('TC-LD-04 com 6 sai da base', async () => {
+  // Dado fixo em 6, todos na base: qualquer vermelho pode sair.
+  const user = await abrirJogo({ dados: '6' });
+  await rolar(user);
+
+  // Depois de rolar: os 4 vermelhos podem andar; os amarelos não.
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-movel', 'true');
+    expect(peao('amarelo', n)).toHaveAttribute('data-movel', 'false');
+  }
+
+  await user.click(peao('vermelho', 1));
+
+  // Depois do clique: só o peão clicado sai, para a casa de saída do Vermelho (c1, não c6).
+  expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'c1');
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+
+  // tirou 6: joga de novo
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+});
