@@ -1,3 +1,4 @@
+import { waitFor } from '@testing-library/dom';
 // Tarefas A2 (início e dado) e A3 (sair da base). Contrato: seções 3 e 5 do PLANEJAMENTO.md.
 import { abrirJogo, peao, rolar, CORES, screen } from './helpers.js';
 
@@ -58,4 +59,31 @@ test('TC-LD-07 não rola duas vezes', async () => {
   }
 
   expect(screen.getByTestId('btn-rolar')).toBeDisabled();
+});
+
+test('TC-LD-03 sem 6 não sai da base', async () => {
+  // Dado fixo em 3, todos na base: o Vermelho não tem jogada.
+  const user = await abrirJogo({ dados: '3' });
+  await rolar(user);
+
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^3$/);
+
+  // Os 4 peões vermelhos não podem andar com 3 e seguem na base.
+  for (const n of [1, 2, 3, 4]) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-movel', 'false');
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+
+  // A spec não diz se a vez passa na hora ou com atraso: espera a condição positiva.
+  await waitFor(() => {
+    expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Sem jogada$/);
+    expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  });
+
+  // Negativas: nenhum peão de nenhuma cor saiu da base.
+  for (const cor of CORES) {
+    for (const n of [1, 2, 3, 4]) {
+      expect(peao(cor, n)).toHaveAttribute('data-casa', 'base');
+    }
+  }
 });
