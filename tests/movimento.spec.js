@@ -39,3 +39,25 @@ test('TC-LD-08 só peão que pode andar se mexe', async () => {
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
   expect(screen.getByTestId('btn-rolar')).toBeDisabled();
 });
+
+// TC-LD-09: Amarelo joga, amarelo 1 em c50, dado 5: c51, c52, c1, c2, c3 (depois de c52 vem c1).
+const PARAMS_DAR_A_VOLTA = { vez: 'amarelo', amarelo: 'c50,base,base,base', dados: '5' };
+
+test('TC-LD-09 dar a volta no tabuleiro', async () => {
+  // Amarelo 1 em c50 com dado 5 dá a volta e para em c3 (não c55, que não existe, nem na reta a*).
+  const user = await abrirJogo(PARAMS_DAR_A_VOLTA);
+  await rolar(user);
+
+  expect(peao('amarelo', 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('amarelo', 1));
+
+  expect(peao('amarelo', 1)).toHaveAttribute('data-casa', 'c3');
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
+  }
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+});
