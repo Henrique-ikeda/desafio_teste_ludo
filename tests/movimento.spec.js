@@ -134,6 +134,13 @@ test('TC-LD-12 chegada só com número exato', async () => {
   expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'false');
   expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'v4');
   expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^0$/);
+  // Peões não citados continuam na base.
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
+  }
 
   // Jogo 2: mesmas posições, dado 2 leva o peão exatamente à chegada.
   user = await abrirJogo(PARAMS_CHEGADA_EXATA);
@@ -147,6 +154,9 @@ test('TC-LD-12 chegada só com número exato', async () => {
   expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^1$/);
   for (let n = 2; n <= 4; n++) {
     expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
   }
 });
 
