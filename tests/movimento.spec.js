@@ -189,6 +189,11 @@ test.each(FRONTEIRAS)('TC-LD-33 fronteiras do percurso: %s', async (_desc, cor, 
   for (let n = 2; n <= 4; n++) {
     expect(peao(cor, n)).toHaveAttribute('data-casa', 'base');
   }
+  // A outra cor (não citada) continua na base.
+  const outra = cor === 'vermelho' ? 'amarelo' : 'vermelho';
+  for (let n = 1; n <= 4; n++) {
+    expect(peao(outra, n)).toHaveAttribute('data-casa', 'base');
+  }
 });
 
 // TC-LD-34: vermelho 1 em c24, dado 3: c25, c26, c27. A entrada da reta do Amarelo (depois de c25) não vale para o Vermelho.
