@@ -68,17 +68,16 @@ test('TC-LD-03 sem 6 não sai da base', async () => {
 
   expect(screen.getByTestId('dado')).toHaveTextContent(/^3$/);
 
-  // Os 4 peões vermelhos não podem andar com 3 e seguem na base.
-  for (const n of [1, 2, 3, 4]) {
-    expect(peao('vermelho', n)).toHaveAttribute('data-movel', 'false');
-    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
-  }
-
   // A spec não diz se a vez passa na hora ou com atraso: espera a condição positiva.
   await waitFor(() => {
     expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Sem jogada$/);
     expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
   });
+
+  // Os 4 peões vermelhos não podiam andar com 3.
+  for (const n of [1, 2, 3, 4]) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-movel', 'false');
+  }
 
   // Negativas: nenhum peão de nenhuma cor saiu da base.
   for (const cor of CORES) {
