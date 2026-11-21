@@ -110,3 +110,27 @@ test('TC-LD-04 com 6 sai da base', async () => {
   // tirou 6: joga de novo
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
 });
+
+test('TC-LD-05 tirou 6, joga de novo', async () => {
+  // Dados 6 e depois 2: sai da base com 6, joga de novo e anda 2 (c1 → c3).
+  const user = await abrirJogo({ dados: '6,2' });
+  await rolar(user);
+  await user.click(peao('vermelho', 1));
+
+  // Depois do 1º movimento: o Vermelho continua na vez (tirou 6) e pode rolar de novo.
+  expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'c1');
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+
+  // 2ª rolagem: dado 2, e o peão anda de c1 até c3.
+  await rolar(user);
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^2$/);
+  await user.click(peao('vermelho', 1));
+
+  // Depois do 2º movimento: peão em c3, os outros vermelhos na base e a vez passa (sem 6).
+  expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'c3');
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+});
