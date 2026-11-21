@@ -22,3 +22,20 @@ test('TC-LD-06 andar o número do dado', async () => {
   }
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
 });
+
+// TC-LD-08: vermelho 1 em c1, os outros na base, dado 4 (nenhum peão da base pode sair com 4).
+const PARAMS_SO_PEAO_QUE_PODE_ANDAR = { vermelho: 'c1,base,base,base', dados: '4' };
+
+test('TC-LD-08 só peão que pode andar se mexe', async () => {
+  // Peão 2 está na base e não pode sair com 4; só o peão 1 (em c1) pode andar.
+  const user = await abrirJogo(PARAMS_SO_PEAO_QUE_PODE_ANDAR);
+  await rolar(user);
+  await user.click(peao('vermelho', 2));
+
+  expect(peao('vermelho', 2)).toHaveAttribute('data-movel', 'false');
+  expect(peao('vermelho', 2)).toHaveAttribute('data-casa', 'base');
+  expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'true');
+  expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'c1');
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('btn-rolar')).toBeDisabled();
+});
