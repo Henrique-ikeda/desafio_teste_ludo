@@ -134,3 +134,32 @@ test('TC-LD-05 tirou 6, joga de novo', async () => {
   }
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
 });
+
+test('TC-LD-31 amarelo sai da base na casa dele', async () => {
+  // Amarelo começa e tira 6: sai na casa de saída dele (c27).
+  const user = await abrirJogo({ vez: 'amarelo', dados: '6' });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+
+  await rolar(user);
+
+  // Depois de rolar: os 4 amarelos podem sair da base; os vermelhos não.
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-movel', 'true');
+    expect(peao('vermelho', n)).toHaveAttribute('data-movel', 'false');
+  }
+
+  await user.click(peao('amarelo', 1));
+
+  // Depois do clique: só o peão clicado sai, para a casa de saída do Amarelo (c27).
+  expect(peao('amarelo', 1)).toHaveAttribute('data-casa', 'c27');
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
+  }
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+
+  // tirou 6: joga de novo
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+});
