@@ -176,7 +176,7 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 |---|---|---|---|
 | **A1** Setup: `package.json`, `babel.config.cjs`, `js/main.js` vazio, `.gitignore`, `index.html` esqueleto, `tests/helpers.js`, verificador, skill, sub-agentes e hooks, PLANEJAMENTO e docs | `main` (repositório vazio, commit direto) | tudo | — |
 | **A2** Início e dado | `henrique/a2-inicio-dado` | tests/dado-e-saida.spec.js | 01, 02, 07 |
-| **A3** Sair da base | `henrique/a3-sair-da-base` | tests/dado-e-saida.spec.js | 03, 04, 05 |
+| **A3** Sair da base | `henrique/a3-sair-da-base` | tests/dado-e-saida.spec.js | 03, 04, 05, 31, 32 |
 | **A4** Mover no percurso | `henrique/a4-mover` | tests/movimento.spec.js | 06, 08, 09 |
 | **A5** Reta final e chegada | `henrique/a5-reta-final` | tests/movimento.spec.js | 10, 11, 12 |
 
