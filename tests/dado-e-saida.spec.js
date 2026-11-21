@@ -163,3 +163,25 @@ test('TC-LD-31 amarelo sai da base na casa dele', async () => {
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
   expect(screen.getByTestId('btn-rolar')).toBeEnabled();
 });
+
+test('TC-LD-32 com 6 pode mover um peão do percurso em vez de sair', async () => {
+  // Vermelho 1 em c10, os outros na base, dado 6: pode sair da base OU andar c10 → c16.
+  const user = await abrirJogo({ vermelho: 'c10,base,base,base', dados: '6' });
+  await rolar(user);
+
+  // Depois de rolar: os 4 vermelhos podem andar com o 6 (o 1 pelo percurso, os outros por saírem da base).
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-movel', 'true');
+  }
+
+  await user.click(peao('vermelho', 1));
+
+  // Depois do clique: o peão 1 anda c10 → c16 (não sai da base); os outros continuam na base.
+  expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'c16');
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+
+  // tirou 6: joga de novo
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+});
