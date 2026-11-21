@@ -7,9 +7,9 @@ Cada regra da seção 1 do PLANEJAMENTO.md tem pelo menos um caso de teste que o
 | 1 | 4 peões de cada cor na base; Vermelho começa | 01 |
 | 2 | Dado de 1 a 6 | 02 |
 | 3 | Rolar uma vez e mover antes de rolar de novo | 07, 08 |
-| 4 | Sair da base só com 6, na casa de saída | 03, 04, 16 |
-| 5 | Tirou 6, joga de novo | 05 |
-| 6 | Andar exatamente o número do dado; só peão que pode andar se mexe | 06, 08, 24 |
+| 4 | Sair da base só com 6, na casa de saída | 03, 04, 16, 31 |
+| 5 | Tirou 6, joga de novo | 05, 31, 32 |
+| 6 | Andar exatamente o número do dado; só peão que pode andar se mexe | 06, 08, 24, 32 |
 | 7 | Percurso circular (Amarelo passa de `c52` para `c1`) | 09 |
 | 8 | Reta final de cada cor | 10, 11 |
 | 9 | Chegada só com número exato | 12, 20, 21 |

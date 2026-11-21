@@ -46,7 +46,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 - **Metodologia:** TDD, um caso de teste por vez: escrever, rodar, ver falhar pelo motivo certo e fazer o commit `test:`. Uso de IA documentado em [docs/TDD-COM-IA.md](docs/TDD-COM-IA.md).
 - **Integração contínua:** o GitHub Actions roda `npm ci` e `npm run verificar` em todo push e Pull Request.
 
-## Casos de teste (24)
+## Casos de teste (26)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -62,6 +62,8 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 | TC-LD-10 | Vermelho entra na reta final | `tests/movimento.spec.js` | `peao-vermelho-1` em `v2` | Henrique |
 | TC-LD-11 | Amarelo entra na reta final | `tests/movimento.spec.js` | `peao-amarelo-1` em `a2` (não passa por `c26`) | Henrique |
 | TC-LD-12 | Chegada só com número exato | `tests/movimento.spec.js` | Jogo 1: `peao-vermelho-1` com `data-movel` = `false`, continua em `v4`; `mensagem` = "Sem jogada"; `vez` = "Amarelo". Jogo 2: `peao-vermelho-1` em `chegada`; `chegada-vermelho` = 1 | Henrique |
+| TC-LD-31 | Amarelo sai da base na casa dele | `tests/dado-e-saida.spec.js` | `peao-amarelo-1` em `c27`; `vez` = "Amarelo" (tirou 6) | Henrique |
+| TC-LD-32 | Com 6, pode mover um peão do percurso em vez de sair | `tests/dado-e-saida.spec.js` | Depois de rolar: os 4 vermelhos com `data-movel` = `true`. Depois do clique: `peao-vermelho-1` em `c16`; os outros 3 vermelhos na base; `vez` = "Vermelho" | Henrique |
 | TC-LD-13 | Captura | `tests/captura.spec.js` | `peao-vermelho-1` em `c8`; `peao-amarelo-1` volta para `base` | Felipe |
 | TC-LD-14 | Captura de dois peões | `tests/captura.spec.js` | `peao-amarelo-1` e `peao-amarelo-2` voltam para `base`; `peao-vermelho-1` em `c8` | Felipe |
 | TC-LD-15 | Estrela é segura | `tests/captura.spec.js` | `peao-vermelho-1` e `peao-amarelo-1` os dois em `c9` | Felipe |

@@ -180,6 +180,8 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | **A4** Mover no percurso | `henrique/a4-mover` | tests/movimento.spec.js | 06, 08, 09 |
 | **A5** Reta final e chegada | `henrique/a5-reta-final` | tests/movimento.spec.js | 10, 11, 12 |
 
+**IDs extras (casos além dos 24 originais):** `TC-LD-25` a `TC-LD-30` ficam reservados para o Felipe; os do Henrique começam em `TC-LD-31`. Cada caso extra entra na seção 5, na matriz de cobertura e no README no mesmo PR do teste.
+
 ### Felipe (tarefas F)
 
 | Tarefa | Branch | Arquivos | Casos de teste |
@@ -210,6 +212,8 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | TC-LD-10 | Vermelho entra na reta final | `?vermelho=c49,base,base,base&dados=4`. Rolar; clicar `peao-vermelho-1` | `peao-vermelho-1` em `v2` |
 | TC-LD-11 | Amarelo entra na reta final | `?vez=amarelo&amarelo=c24,base,base,base&dados=3`. Rolar; clicar `peao-amarelo-1` | `peao-amarelo-1` em `a2` (não passa por `c26`) |
 | TC-LD-12 | Chegada só com número exato | Jogo 1: `?vermelho=v4,base,base,base&dados=3`; rolar. Jogo 2: mesmas posições com `dados=2`; rolar; clicar `peao-vermelho-1` | Jogo 1: `peao-vermelho-1` com `data-movel` = `false`, continua em `v4`; `mensagem` = "Sem jogada"; `vez` = "Amarelo". Jogo 2: `peao-vermelho-1` em `chegada`; `chegada-vermelho` = 1 |
+| TC-LD-31 | Amarelo sai da base na casa dele | `?vez=amarelo&dados=6`. Rolar; clicar `peao-amarelo-1` | `peao-amarelo-1` em `c27`; `vez` = "Amarelo" (tirou 6) |
+| TC-LD-32 | Com 6, pode mover um peão do percurso em vez de sair | `?vermelho=c10,base,base,base&dados=6`. Rolar; clicar `peao-vermelho-1` | Depois de rolar: os 4 vermelhos com `data-movel` = `true`. Depois do clique: `peao-vermelho-1` em `c16`; os outros 3 vermelhos na base; `vez` = "Vermelho" |
 
 ### Felipe — captura, casas seguras, vez e fim de jogo
 
