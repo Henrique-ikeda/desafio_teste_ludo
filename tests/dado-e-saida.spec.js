@@ -105,6 +105,10 @@ test('TC-LD-04 com 6 sai da base', async () => {
   for (let n = 2; n <= 4; n++) {
     expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
   }
+  // Os amarelos (não citados) continuam na base.
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
+  }
 
   // tirou 6: joga de novo
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
