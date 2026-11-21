@@ -149,3 +149,34 @@ test('TC-LD-12 chegada só com número exato', async () => {
     expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
   }
 });
+
+// TC-LD-33 fronteiras do percurso (seção 1).
+// Vermelho: sai em c1, anda até c51, entra na reta final v1…v5 e depois na chegada (56 passos da saída).
+// Amarelo: sai em c27, anda c28…c52, c1…c25, entra na reta final a1…a5 e depois na chegada.
+// Cada linha: [descrição, cor, parâmetros de URL, casa esperada depois de andar o dado].
+const FRONTEIRAS = [
+  // Vermelho c51 + 1: a última casa do círculo é c51; o próximo passo entra em v1 (não c52).
+  ['Vermelho c51 + 1 entra em v1', 'vermelho', { vermelho: 'c51,base,base,base', dados: '1' }, 'v1'],
+  // Vermelho c50 + 6: c51, v1, v2, v3, v4, v5 (5 casas da reta final, sem passar da última).
+  ['Vermelho c50 + 6 vai a v5', 'vermelho', { vermelho: 'c50,base,base,base', dados: '6' }, 'v5'],
+  // Vermelho c51 + 6: v1…v5 (5 passos) + chegada (6º passo, exato).
+  ['Vermelho c51 + 6 chega exato', 'vermelho', { vermelho: 'c51,base,base,base', dados: '6' }, 'chegada'],
+  // Amarelo c25 + 1: a próxima casa depois de c25 é a1 (não c26).
+  ['Amarelo c25 + 1 entra em a1', 'amarelo', { vez: 'amarelo', amarelo: 'c25,base,base,base', dados: '1' }, 'a1'],
+  // Amarelo c52 + 1: depois de c52 vem c1 (o círculo dá a volta; não há c53).
+  ['Amarelo c52 + 1 vai a c1', 'amarelo', { vez: 'amarelo', amarelo: 'c52,base,base,base', dados: '1' }, 'c1'],
+];
+
+test.each(FRONTEIRAS)('TC-LD-33 fronteiras do percurso: %s', async (_desc, cor, params, esperada) => {
+  const user = await abrirJogo(params);
+  await rolar(user);
+
+  expect(peao(cor, 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao(cor, 1));
+
+  expect(peao(cor, 1)).toHaveAttribute('data-casa', esperada);
+  for (let n = 2; n <= 4; n++) {
+    expect(peao(cor, n)).toHaveAttribute('data-casa', 'base');
+  }
+});
