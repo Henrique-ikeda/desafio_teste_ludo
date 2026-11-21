@@ -46,7 +46,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 - **Metodologia:** TDD, um caso de teste por vez: escrever, rodar, ver falhar pelo motivo certo e fazer o commit `test:`. Uso de IA documentado em [docs/TDD-COM-IA.md](docs/TDD-COM-IA.md).
 - **Integração contínua:** o GitHub Actions roda `npm ci` e `npm run verificar` em todo push e Pull Request.
 
-## Casos de teste (24)
+## Casos de teste (27)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -62,6 +62,9 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 | TC-LD-10 | Vermelho entra na reta final | `tests/movimento.spec.js` | `peao-vermelho-1` em `v2` | Henrique |
 | TC-LD-11 | Amarelo entra na reta final | `tests/movimento.spec.js` | `peao-amarelo-1` em `a2` (não passa por `c26`) | Henrique |
 | TC-LD-12 | Chegada só com número exato | `tests/movimento.spec.js` | Jogo 1: `peao-vermelho-1` com `data-movel` = `false`, continua em `v4`; `mensagem` = "Sem jogada"; `vez` = "Amarelo". Jogo 2: `peao-vermelho-1` em `chegada`; `chegada-vermelho` = 1 | Henrique |
+| TC-LD-33 | Fronteiras do percurso | `tests/movimento.spec.js` | Vermelho `c51` + 1 → `v1`; `c50` + 6 → `v5`; `c51` + 6 → `chegada`; Amarelo `c25` + 1 → `a1`; `c52` + 1 → `c1` | Henrique |
+| TC-LD-34 | Só o dono entra na própria reta final | `tests/movimento.spec.js` | `peao-vermelho-1` em `c27` (segue no percurso; não entra em `a1`…`a5`) | Henrique |
+| TC-LD-35 | Chegada exata do Amarelo | `tests/movimento.spec.js` | Jogo 1: `peao-amarelo-1` com `data-movel` = `false`, continua em `a4`; `mensagem` = "Sem jogada"; `vez` = "Vermelho". Jogo 2: `peao-amarelo-1` em `chegada`; `chegada-amarelo` = 1 | Henrique |
 | TC-LD-13 | Captura | `tests/captura.spec.js` | `peao-vermelho-1` em `c8`; `peao-amarelo-1` volta para `base` | Felipe |
 | TC-LD-14 | Captura de dois peões | `tests/captura.spec.js` | `peao-amarelo-1` e `peao-amarelo-2` voltam para `base`; `peao-vermelho-1` em `c8` | Felipe |
 | TC-LD-15 | Estrela é segura | `tests/captura.spec.js` | `peao-vermelho-1` e `peao-amarelo-1` os dois em `c9` | Felipe |

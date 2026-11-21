@@ -178,7 +178,9 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | **A2** Início e dado | `henrique/a2-inicio-dado` | tests/dado-e-saida.spec.js | 01, 02, 07 |
 | **A3** Sair da base | `henrique/a3-sair-da-base` | tests/dado-e-saida.spec.js | 03, 04, 05 |
 | **A4** Mover no percurso | `henrique/a4-mover` | tests/movimento.spec.js | 06, 08, 09 |
-| **A5** Reta final e chegada | `henrique/a5-reta-final` | tests/movimento.spec.js | 10, 11, 12 |
+| **A5** Reta final e chegada | `henrique/a5-reta-final` | tests/movimento.spec.js | 10, 11, 12, 33, 34, 35 |
+
+**IDs extras (casos além dos 24 originais):** `TC-LD-25` a `TC-LD-30` ficam reservados para o Felipe; os do Henrique começam em `TC-LD-31`. Cada caso extra entra na seção 5, na matriz de cobertura e no README no mesmo PR do teste.
 
 ### Felipe (tarefas F)
 
@@ -210,6 +212,9 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | TC-LD-10 | Vermelho entra na reta final | `?vermelho=c49,base,base,base&dados=4`. Rolar; clicar `peao-vermelho-1` | `peao-vermelho-1` em `v2` |
 | TC-LD-11 | Amarelo entra na reta final | `?vez=amarelo&amarelo=c24,base,base,base&dados=3`. Rolar; clicar `peao-amarelo-1` | `peao-amarelo-1` em `a2` (não passa por `c26`) |
 | TC-LD-12 | Chegada só com número exato | Jogo 1: `?vermelho=v4,base,base,base&dados=3`; rolar. Jogo 2: mesmas posições com `dados=2`; rolar; clicar `peao-vermelho-1` | Jogo 1: `peao-vermelho-1` com `data-movel` = `false`, continua em `v4`; `mensagem` = "Sem jogada"; `vez` = "Amarelo". Jogo 2: `peao-vermelho-1` em `chegada`; `chegada-vermelho` = 1 |
+| TC-LD-33 | Fronteiras do percurso | Um jogo por linha (`test.each`): Vermelho em `c51` + 1; Vermelho em `c50` + 6; Vermelho em `c51` + 6; Amarelo (`vez=amarelo`) em `c25` + 1; Amarelo (`vez=amarelo`) em `c52` + 1. Rolar; clicar o peão 1 da cor | Respectivamente: `v1`; `v5`; `chegada`; `a1`; `c1` |
+| TC-LD-34 | Só o dono entra na própria reta final | `?vermelho=c24,base,base,base&dados=3`. Rolar; clicar `peao-vermelho-1` | `peao-vermelho-1` em `c27` (segue no percurso; não entra em `a1`…`a5`) |
+| TC-LD-35 | Chegada exata do Amarelo | Jogo 1: `?vez=amarelo&amarelo=a4,base,base,base&dados=3`; rolar. Jogo 2: mesmas posições com `dados=2`; rolar; clicar `peao-amarelo-1` | Jogo 1: `peao-amarelo-1` com `data-movel` = `false`, continua em `a4`; `mensagem` = "Sem jogada"; `vez` = "Vermelho". Jogo 2: `peao-amarelo-1` em `chegada`; `chegada-amarelo` = 1 |
 
 ### Felipe — captura, casas seguras, vez e fim de jogo
 
