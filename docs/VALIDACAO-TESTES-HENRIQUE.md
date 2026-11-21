@@ -20,7 +20,7 @@ Num repositório "somente testes", falhar pelo motivo certo não prova que o tes
 | TC-LD-02 (dado aleatório), 50 execuções seguidas | 50/50 passam |
 | Suíte completa, 3 execuções seguidas | 21/21 nas 3 (nenhum teste intermitente) |
 
-São 21 testes porque o TC-LD-33 é um `test.each` com 5 linhas.
+São 21 testes porque a validação juntou as duas branches: `tests/dado-e-saida.spec.js` do A3 (TCs 01–05, 07, 31 e 32, com 8 testes) e `tests/movimento.spec.js` do A5 (TCs 06, 08–12 e 33–35, com 13 testes, já que o TC-LD-33 é um `test.each` de 5 linhas). Depois de mesclar A2 → A3 e A4 → A5 na `main`, a conta é reproduzível lá.
 
 ## Mutantes (um defeito por vez na referência)
 
