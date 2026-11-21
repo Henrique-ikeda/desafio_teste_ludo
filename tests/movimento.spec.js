@@ -1,3 +1,4 @@
+import { waitFor } from '@testing-library/dom';
 // Tarefas A4 (mover no percurso) e A5 (reta final e chegada). Contrato: seções 3 e 5 do PLANEJAMENTO.md.
 import { abrirJogo, peao, rolar, screen } from './helpers.js';
 
@@ -112,4 +113,39 @@ test('TC-LD-11 amarelo entra na reta final', async () => {
     expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
   }
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+});
+
+// TC-LD-12 jogo 1: vermelho 1 em v4, dado 3: passaria da chegada (v5, chegada, +1), não pode andar.
+const PARAMS_CHEGADA_PASSA = { vermelho: 'v4,base,base,base', dados: '3' };
+// jogo 2: mesmas posições, dado 2: v5, chegada (exato).
+const PARAMS_CHEGADA_EXATA = { vermelho: 'v4,base,base,base', dados: '2' };
+
+test('TC-LD-12 chegada só com número exato', async () => {
+  // Jogo 1: dado 3 passa da chegada, então o peão 1 (em v4) não anda e a vez passa sozinha.
+  let user = await abrirJogo(PARAMS_CHEGADA_PASSA);
+  await rolar(user);
+
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^3$/);
+  // A vez passa sozinha (na hora ou com atraso): espera a condição positiva primeiro.
+  await waitFor(() => {
+    expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Sem jogada$/);
+    expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  });
+  expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'false');
+  expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'v4');
+  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^0$/);
+
+  // Jogo 2: mesmas posições, dado 2 leva o peão exatamente à chegada.
+  user = await abrirJogo(PARAMS_CHEGADA_EXATA);
+  await rolar(user);
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('vermelho', 1));
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'chegada');
+  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^1$/);
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
 });
