@@ -237,6 +237,13 @@ test('TC-LD-35 chegada exata do amarelo', async () => {
   expect(peao('amarelo', 1)).toHaveAttribute('data-movel', 'false');
   expect(peao('amarelo', 1)).toHaveAttribute('data-casa', 'a4');
   expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^0$/);
+  // Peões não citados continuam na base.
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
+  }
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
 
   // Jogo 2: mesmas posições, dado 2 leva o peão exatamente à chegada.
   user = await abrirJogo(PARAMS_AMARELO_CHEGADA_EXATA);
@@ -250,5 +257,8 @@ test('TC-LD-35 chegada exata do amarelo', async () => {
   expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^1$/);
   for (let n = 2; n <= 4; n++) {
     expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
+  }
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
   }
 });
