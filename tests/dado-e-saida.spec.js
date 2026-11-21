@@ -122,6 +122,9 @@ test('TC-LD-05 tirou 6, joga de novo', async () => {
 
   // Depois do 1º movimento: o Vermelho continua na vez (tirou 6) e pode rolar de novo.
   expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'c1');
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
   expect(screen.getByTestId('btn-rolar')).toBeEnabled();
 
@@ -134,6 +137,10 @@ test('TC-LD-05 tirou 6, joga de novo', async () => {
   expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'c3');
   for (let n = 2; n <= 4; n++) {
     expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+  // Os amarelos (não citados) continuam na base.
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
   }
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
 });
