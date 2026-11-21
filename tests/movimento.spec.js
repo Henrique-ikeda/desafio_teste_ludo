@@ -180,3 +180,25 @@ test.each(FRONTEIRAS)('TC-LD-33 fronteiras do percurso: %s', async (_desc, cor, 
     expect(peao(cor, n)).toHaveAttribute('data-casa', 'base');
   }
 });
+
+// TC-LD-34: vermelho 1 em c24, dado 3: c25, c26, c27. A entrada da reta do Amarelo (depois de c25) não vale para o Vermelho.
+const PARAMS_SO_O_DONO_ENTRA_NA_RETA = { vermelho: 'c24,base,base,base', dados: '3' };
+
+test('TC-LD-34 só o dono entra na própria reta final', async () => {
+  // Vermelho 1 em c24 com dado 3 segue no percurso e para em c27 (e não a2, a reta do Amarelo).
+  const user = await abrirJogo(PARAMS_SO_O_DONO_ENTRA_NA_RETA);
+  await rolar(user);
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('vermelho', 1));
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'c27');
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
+  }
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
+  }
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+});
