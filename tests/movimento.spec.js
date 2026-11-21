@@ -202,3 +202,38 @@ test('TC-LD-34 só o dono entra na própria reta final', async () => {
   }
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
 });
+
+// TC-LD-35 jogo 1: Amarelo joga, amarelo 1 em a4, dado 3: passaria da chegada.
+const PARAMS_AMARELO_CHEGADA_PASSA = { vez: 'amarelo', amarelo: 'a4,base,base,base', dados: '3' };
+// jogo 2: dado 2: a5, chegada (exato).
+const PARAMS_AMARELO_CHEGADA_EXATA = { vez: 'amarelo', amarelo: 'a4,base,base,base', dados: '2' };
+
+test('TC-LD-35 chegada exata do amarelo', async () => {
+  // Jogo 1: dado 3 passa da chegada, então o peão 1 (em a4) não anda e a vez passa para o Vermelho.
+  let user = await abrirJogo(PARAMS_AMARELO_CHEGADA_PASSA);
+  await rolar(user);
+
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^3$/);
+  // A vez passa sozinha (na hora ou com atraso): espera a condição positiva primeiro.
+  await waitFor(() => {
+    expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Sem jogada$/);
+    expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  });
+  expect(peao('amarelo', 1)).toHaveAttribute('data-movel', 'false');
+  expect(peao('amarelo', 1)).toHaveAttribute('data-casa', 'a4');
+  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^0$/);
+
+  // Jogo 2: mesmas posições, dado 2 leva o peão exatamente à chegada.
+  user = await abrirJogo(PARAMS_AMARELO_CHEGADA_EXATA);
+  await rolar(user);
+
+  expect(peao('amarelo', 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('amarelo', 1));
+
+  expect(peao('amarelo', 1)).toHaveAttribute('data-casa', 'chegada');
+  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^1$/);
+  for (let n = 2; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-casa', 'base');
+  }
+});
