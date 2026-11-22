@@ -130,3 +130,29 @@ test('TC-LD-24 peão na chegada não anda', async () => {
   expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^1$/);
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
 });
+
+// TC-LD-28: 3 amarelos já chegaram; o 4 está em a5 e o dado 1 leva ele exatamente à chegada.
+const PARAMS_AMARELO_VENCE = { vez: 'amarelo', amarelo: 'chegada,chegada,chegada,a5', dados: '1' };
+
+test('TC-LD-28 amarelo vence', async () => {
+  // Amarelo 4 em a5 com dado 1: chega exato, e o Amarelo chega aos 4 peões e vence.
+  const user = await abrirJogo(PARAMS_AMARELO_VENCE);
+
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^3$/);
+
+  await rolar(user);
+
+  expect(peao('amarelo', 4)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('amarelo', 4));
+
+  confereCasas({
+    vermelho: ['base', 'base', 'base', 'base'],
+    amarelo: ['chegada', 'chegada', 'chegada', 'chegada'],
+  });
+  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^4$/);
+  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^0$/);
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Amarelo venceu!$/);
+  expect(screen.getByTestId('btn-rolar')).toBeDisabled();
+});
