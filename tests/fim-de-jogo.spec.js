@@ -212,3 +212,16 @@ test('TC-LD-36 nova partida com o amarelo na vez', async () => {
   await user.click(screen.getByTestId('btn-nova-partida'));
   await confereNovaPartida(user);
 });
+
+test('TC-LD-37 nova partida depois da vitória do amarelo', async () => {
+  // Cenário do TC-LD-28: o Amarelo vence. "Nova partida" também tem de reabrir o jogo depois da vitória dele.
+  const user = await abrirJogo(PARAMS_AMARELO_VENCE);
+  await venceComPeao4(user, 'amarelo');
+
+  // Pré-condição: o Amarelo venceu de verdade.
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Amarelo venceu!$/);
+  expect(screen.getByTestId('btn-rolar')).toBeDisabled();
+
+  await user.click(screen.getByTestId('btn-nova-partida'));
+  await confereNovaPartida(user);
+});
