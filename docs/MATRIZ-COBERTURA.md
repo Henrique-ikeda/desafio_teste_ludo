@@ -10,12 +10,12 @@ Cada regra da seção 1 do PLANEJAMENTO.md tem pelo menos um caso de teste que o
 | 4 | Sair da base só com 6, na casa de saída | 03, 04, 16, 31 |
 | 5 | Tirou 6, joga de novo | 05, 31, 32 |
 | 6 | Andar exatamente o número do dado; só peão que pode andar se mexe | 06, 08, 24, 32 |
-| 7 | Percurso circular (Amarelo passa de `c52` para `c1`) | 09, 33 |
+| 7 | Percurso circular (Amarelo passa de `c52` para `c1`) | 09, 26, 33 |
 | 8 | Reta final de cada cor; só o dono entra na própria reta | 10, 11, 33, 34 |
 | 9 | Chegada só com número exato | 12, 20, 21, 33, 35 |
 | 10 | Sem jogada: a vez passa sozinha (mesmo com 6) | 03, 12, 19, 20, 35 |
 | 11 | Vez alterna sem 6 | 06, 18 |
-| 12 | Captura manda todos os peões adversários da casa para a base | 13, 14 |
+| 12 | Captura manda todos os peões adversários da casa para a base (com as duas cores; só quem termina na casa) | 13, 14, 26, 27 |
 | 13 | Casas seguras (saídas e estrelas) | 15, 16 |
 | 14 | Peões da mesma cor dividem a casa | 17 |
 | 15 | Vitória com os 4 na chegada; depois disso nada funciona | 21, 22 |

@@ -234,6 +234,8 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | TC-LD-22 | Nada funciona após a vitória | Depois do TC-LD-21 | `btn-rolar` desabilitado; `mensagem` continua "Vermelho venceu!"; `vez` não muda ao clicar `btn-rolar` |
 | TC-LD-23 | Nova partida | `?vermelho=c10,c20,base,base&amarelo=c30,base,base,base&dados=6`. Rolar; clicar `peao-vermelho-3`; clicar `btn-nova-partida` | Os 8 peões na base; `vez` = "Vermelho"; `dado` vazio; `chegada-vermelho` = 0; `mensagem` vazia; `btn-rolar` habilitado |
 | TC-LD-24 | Peão na chegada não anda | `?vermelho=chegada,c10,base,base&dados=2`. Rolar; clicar `peao-vermelho-1`; clicar `peao-vermelho-2` | `peao-vermelho-1` com `data-movel` = `false` e continua em `chegada`; `peao-vermelho-2` com `data-movel` = `true` e vai para `c12` |
+| TC-LD-26 | Amarelo captura (e cruza `c52` → `c1`) | `?vez=amarelo&amarelo=c50,base,base,base&vermelho=c3,base,base,base&dados=5`. Rolar; clicar `peao-amarelo-1` | `peao-amarelo-1` em `c3`; `peao-vermelho-1` volta para `base`; `vez` = "Vermelho" |
+| TC-LD-27 | Passar por cima não captura | `?vermelho=c5,base,base,base&amarelo=c6,base,base,base&dados=3`. Rolar; clicar `peao-vermelho-1` | `peao-vermelho-1` em `c8`; `peao-amarelo-1` continua em `c6` (só captura quem termina na casa) |
 
 ## 6. Fluxo de trabalho no Git
 
