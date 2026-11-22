@@ -10,35 +10,39 @@ function confereCasas(esperado) {
   }
 }
 
+// Helper local: cenário de vitória dos TCs 21, 22, 28 e 29. Os peões 1 a 3 da cor já chegaram e o 4
+// está a um passo da chegada (dado 1). Rola, move o peão 4 e confere que os 4 chegaram (o adversário na base).
+async function venceComPeao4(user, cor) {
+  const outra = cor === 'vermelho' ? 'amarelo' : 'vermelho';
+  expect(screen.getByTestId(`chegada-${cor}`)).toHaveTextContent(/^3$/);
+
+  await rolar(user);
+  expect(peao(cor, 4)).toHaveAttribute('data-movel', 'true');
+  await user.click(peao(cor, 4));
+
+  confereCasas({
+    [cor]: ['chegada', 'chegada', 'chegada', 'chegada'],
+    [outra]: ['base', 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId(`chegada-${cor}`)).toHaveTextContent(/^4$/);
+  expect(screen.getByTestId(`chegada-${outra}`)).toHaveTextContent(/^0$/);
+}
+
 // TC-LD-21: 3 vermelhos já chegaram; o 4 está em v5 e o dado 1 leva ele exatamente à chegada.
 const PARAMS_VITORIA = { vermelho: 'chegada,chegada,chegada,v5', dados: '1' };
 
 test('TC-LD-21 vitória', async () => {
   // Vermelho 4 em v5 com dado 1: chega exato, e o Vermelho chega aos 4 peões e vence.
   const user = await abrirJogo(PARAMS_VITORIA);
+  await venceComPeao4(user, 'vermelho');
 
-  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^3$/);
-
-  await rolar(user);
-
-  expect(peao('vermelho', 4)).toHaveAttribute('data-movel', 'true');
-
-  await user.click(peao('vermelho', 4));
-
-  confereCasas({
-    vermelho: ['chegada', 'chegada', 'chegada', 'chegada'],
-    amarelo: ['base', 'base', 'base', 'base'],
-  });
-  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^4$/);
-  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^0$/);
   expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Vermelho venceu!$/);
 });
 
 test('TC-LD-22 nada funciona após a vitória', async () => {
   // Depois da vitória do Vermelho, o botão de rolar fica desabilitado e nenhum peão pode andar.
   const user = await abrirJogo(PARAMS_VITORIA);
-  await rolar(user);
-  await user.click(peao('vermelho', 4));
+  await venceComPeao4(user, 'vermelho');
 
   // Pré-condição: a vitória aconteceu de fato, senão o teste não diz nada sobre "depois da vitória".
   expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Vermelho venceu!$/);
@@ -138,20 +142,8 @@ test('TC-LD-28 amarelo vence', async () => {
   const user = await abrirJogo(PARAMS_AMARELO_VENCE);
 
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
-  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^3$/);
+  await venceComPeao4(user, 'amarelo');
 
-  await rolar(user);
-
-  expect(peao('amarelo', 4)).toHaveAttribute('data-movel', 'true');
-
-  await user.click(peao('amarelo', 4));
-
-  confereCasas({
-    vermelho: ['base', 'base', 'base', 'base'],
-    amarelo: ['chegada', 'chegada', 'chegada', 'chegada'],
-  });
-  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^4$/);
-  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^0$/);
   expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Amarelo venceu!$/);
   expect(screen.getByTestId('btn-rolar')).toBeDisabled();
 });
@@ -159,12 +151,10 @@ test('TC-LD-28 amarelo vence', async () => {
 test('TC-LD-29 nova partida depois da vitória', async () => {
   // Depois de vencer, "Nova partida" zera o jogo e o dado volta a rolar.
   const user = await abrirJogo(PARAMS_VITORIA);
-  await rolar(user);
-  await user.click(peao('vermelho', 4));
+  await venceComPeao4(user, 'vermelho');
 
   // Pré-condição: o Vermelho venceu de fato.
   expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Vermelho venceu!$/);
-  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^4$/);
   expect(screen.getByTestId('btn-rolar')).toBeDisabled();
 
   await user.click(screen.getByTestId('btn-nova-partida'));
