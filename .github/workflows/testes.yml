@@ -1,17 +1,91 @@
+# CI dos casos de teste (tarefa F1). Modo somente testes: `npm test` falha de propósito;
+# quem decide se a entrega está certa é o verificador (`npm run verificar`), que sai com 0
+# quando todo teste falha pelo motivo certo e tem um ID da seção 5 do PLANEJAMENTO.md.
 name: Testes
 
 on:
   push:
   pull_request:
+    # `labeled` para o job verificar-completo rodar quando o rótulo `entrega` for colocado.
+    types: [opened, synchronize, reopened, labeled]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: testes-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 
 jobs:
   verificar:
+    name: verificar (Node ${{ matrix.node }}, ${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [18, 20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+
+      - name: Verificador (cada teste falha pelo motivo certo)
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p reports
+          npm run verificar 2>&1 | tee reports/verificar.txt
+
+      - name: Relatório JSON do Jest (as falhas são esperadas)
+        if: always()
+        shell: bash
+        run: npx jest --json --outputFile=reports/jest.json > /dev/null 2>&1 || true
+
+      - name: Publicar relatórios
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios-node${{ matrix.node }}-${{ matrix.os }}
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 14
+
+  # Conferência da entrega: também acusa TCs do PLANEJAMENTO.md sem teste.
+  # Só roda à mão (Run workflow) ou em PR com o rótulo `entrega`; não bloqueia os PRs do dia a dia.
+  verificar-completo:
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      (github.event_name == 'pull_request' && contains(github.event.pull_request.labels.*.name, 'entrega'))
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
+
       - run: npm ci
-      - run: npm run verificar
+
+      - name: Verificador completo
+        shell: bash
+        run: |
+          set -o pipefail
+          mkdir -p reports
+          npm run verificar:completo 2>&1 | tee reports/verificar-completo.txt
+
+      - name: Publicar relatório
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorio-verificar-completo
+          path: reports/
+          if-no-files-found: warn
+          retention-days: 14
