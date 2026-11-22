@@ -244,3 +244,17 @@ test('TC-LD-39 captura com 6 dá jogada extra', async () => {
   expect(screen.getByTestId('btn-rolar')).toBeEnabled();
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// TC-LD-40: o vermelho 1 em c5 anda 3 até c8, onde há 3 (depois 4) amarelos juntos: TODOS voltam para a base.
+const CAPTURA_VARIOS = [
+  [3, 'c8,c8,c8,base'],
+  [4, 'c8,c8,c8,c8'],
+];
+
+test.each(CAPTURA_VARIOS)('TC-LD-40 captura de %i peões da mesma casa', async (_quantos, amarelo) => {
+  await jogaPeao({ vermelho: 'c5,base,base,base', amarelo, dados: '3' }, 'vermelho');
+
+  confereCasas({ vermelho: ['c8', 'base', 'base', 'base'], amarelo: BASE });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
