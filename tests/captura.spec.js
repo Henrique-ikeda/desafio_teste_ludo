@@ -1,5 +1,5 @@
 // Tarefas F2 (captura) e F3 (casas seguras). Contrato: seções 3 e 5 do PLANEJAMENTO.md.
-import { abrirJogo, peao, rolar, CORES, screen } from './helpers.js';
+import { abrirJogo, peao, rolar, CORES, CASAS_SEGURAS, screen } from './helpers.js';
 
 // Helper local: confere a casa dos 8 peões de uma vez (peões não citados ficam na base),
 // para pegar uma captura que manda o peão errado para a base ou mexe em outro peão.
@@ -157,5 +157,39 @@ test('TC-LD-17 mesma cor divide a casa', async () => {
     amarelo: ['base', 'base', 'base', 'base'],
   });
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
+
+// TC-LD-25: as 8 casas seguras (seção 1: saídas c1, c14, c27, c40 e estrelas c9, c22, c35, c48).
+// Cada linha: [casa segura, cor que joga, parâmetros de URL]. O peão 1 da vez anda 3 e termina na casa segura
+// onde está o peão 1 do adversário; ninguém é capturado.
+const CASAS_SEGURAS_TODAS = [
+  ['c9',  'vermelho', { vermelho: 'c6,base,base,base',  amarelo: 'c9,base,base,base',  dados: '3' }],
+  ['c14', 'vermelho', { vermelho: 'c11,base,base,base', amarelo: 'c14,base,base,base', dados: '3' }],
+  ['c22', 'vermelho', { vermelho: 'c19,base,base,base', amarelo: 'c22,base,base,base', dados: '3' }],
+  ['c27', 'vermelho', { vermelho: 'c24,base,base,base', amarelo: 'c27,base,base,base', dados: '3' }],
+  ['c35', 'vermelho', { vermelho: 'c32,base,base,base', amarelo: 'c35,base,base,base', dados: '3' }],
+  ['c40', 'vermelho', { vermelho: 'c37,base,base,base', amarelo: 'c40,base,base,base', dados: '3' }],
+  ['c48', 'vermelho', { vermelho: 'c45,base,base,base', amarelo: 'c48,base,base,base', dados: '3' }],
+  // c1: o Vermelho não chega a c1 pelo percurso; quem chega é o Amarelo (c51, c52, c1).
+  ['c1',  'amarelo',  { vez: 'amarelo', vermelho: 'c1,base,base,base', amarelo: 'c50,base,base,base', dados: '3' }],
+];
+
+test.each(CASAS_SEGURAS_TODAS)('TC-LD-25 as 8 casas seguras: %s', async (casa, cor, params) => {
+  // Sanidade: a tabela cobre só casas seguras do helper.
+  expect(CASAS_SEGURAS).toContain(casa);
+
+  const user = await abrirJogo(params);
+  await rolar(user);
+
+  expect(peao(cor, 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao(cor, 1));
+
+  confereCasas({
+    vermelho: [casa, 'base', 'base', 'base'],
+    amarelo: [casa, 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId('vez')).toHaveTextContent(cor === 'vermelho' ? /^Amarelo$/ : /^Vermelho$/);
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
