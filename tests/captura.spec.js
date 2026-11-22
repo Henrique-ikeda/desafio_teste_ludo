@@ -281,3 +281,21 @@ test('TC-LD-42 amarelo passa por cima sem capturar', async () => {
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// TC-LD-43: as 4 estrelas também são seguras para o Amarelo (o TC-LD-25 só leva o Vermelho até elas).
+// Cada linha: [estrela, casa de onde o amarelo 1 anda 3 até ela]. O vermelho 1 já está na estrela.
+const ESTRELAS_DO_AMARELO = [
+  ['c9', 'c6'],
+  ['c22', 'c19'],
+  ['c35', 'c32'],
+  ['c48', 'c45'],
+];
+
+test.each(ESTRELAS_DO_AMARELO)('TC-LD-43 estrela é segura para o amarelo: %s', async (estrela, origem) => {
+  const params = { vez: 'amarelo', amarelo: origem + ',base,base,base', vermelho: estrela + ',base,base,base', dados: '3' };
+  await jogaPeao(params, 'amarelo');
+
+  confereCasas({ vermelho: [estrela, 'base', 'base', 'base'], amarelo: [estrela, 'base', 'base', 'base'] });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
