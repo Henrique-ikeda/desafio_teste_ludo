@@ -199,3 +199,56 @@ test('TC-LD-32 com 6 pode mover um peão do percurso em vez de sair', async () =
   // tirou 6: joga de novo
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
 });
+
+// ---- F6: lacunas de cobertura (TC-LD-45 e TC-LD-48) ----
+
+// Helper local: confere a casa dos 8 peões (peões não citados ficam na base).
+const confereCasas = (esperado) => CORES.forEach((cor) => esperado[cor].forEach((casa, i) => expect(peao(cor, i + 1)).toHaveAttribute('data-casa', casa)));
+
+// TC-LD-45: Amarelo com o peão 1 em c30 e os outros na base, dado 6: pode andar c30 -> c36 OU sair da base
+// (o mesmo que o TC-LD-32 faz com o Vermelho).
+const PARAMS_AMARELO_SEIS_NA_PISTA = { vez: 'amarelo', amarelo: 'c30,base,base,base', dados: '6' };
+
+test('TC-LD-45 amarelo com 6 anda na pista e joga de novo', async () => {
+  const user = await abrirJogo(PARAMS_AMARELO_SEIS_NA_PISTA);
+  await rolar(user);
+
+  // Depois de rolar: os 4 amarelos podem andar com o 6 (o 1 pelo percurso, os outros por saírem da base).
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-movel', 'true');
+    expect(peao('vermelho', n)).toHaveAttribute('data-movel', 'false');
+  }
+
+  await user.click(peao('amarelo', 1));
+
+  confereCasas({
+    vermelho: ['base', 'base', 'base', 'base'],
+    amarelo: ['c36', 'base', 'base', 'base'],
+  });
+  // tirou 6: joga de novo
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+});
+
+// TC-LD-48: com os 8 peões na base, só o 6 tira peão da base. Os valores 1, 2, 4 e 5 não dão jogada
+// (o 3 é o TC-LD-03).
+test.each([1, 2, 4, 5])('TC-LD-48 só o 6 tira peão da base: dado %i', async (valor) => {
+  const user = await abrirJogo({ dados: String(valor) });
+  await rolar(user);
+
+  expect(screen.getByTestId('dado')).toHaveTextContent(new RegExp('^' + valor + '$'));
+
+  // A spec não diz se a vez passa na hora ou com atraso: espera a condição positiva.
+  await waitFor(() => {
+    expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Sem jogada$/);
+    expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  });
+
+  for (const cor of CORES) {
+    for (let n = 1; n <= 4; n++) {
+      expect(peao(cor, n)).toHaveAttribute('data-movel', 'false');
+    }
+  }
+  const base = ['base', 'base', 'base', 'base'];
+  confereCasas({ vermelho: base, amarelo: base });
+});

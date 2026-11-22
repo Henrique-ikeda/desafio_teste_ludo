@@ -262,3 +262,33 @@ test('TC-LD-35 chegada exata do amarelo', async () => {
     expect(peao('vermelho', n)).toHaveAttribute('data-casa', 'base');
   }
 });
+
+// ---- F6: lacunas de cobertura (TC-LD-47) ----
+
+// Helper local: confere a casa dos 8 peões (peões não citados ficam na base).
+const confereCasas = (esperado) => ['vermelho', 'amarelo'].forEach((cor) => esperado[cor].forEach((casa, i) => expect(peao(cor, i + 1)).toHaveAttribute('data-casa', casa)));
+
+// TC-LD-47: vermelho 1 em v4 (v4 + 3 passaria da chegada) e vermelho 2 em c10, dado 3: só o 2 pode andar (c10 -> c13).
+const PARAMS_PASSA_DA_CHEGADA_CLICADO = { vermelho: 'v4,c10,base,base', dados: '3' };
+
+test('TC-LD-47 peão que passaria da chegada não anda ao ser clicado', async () => {
+  const user = await abrirJogo(PARAMS_PASSA_DA_CHEGADA_CLICADO);
+  await rolar(user);
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'false');
+  expect(peao('vermelho', 2)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('vermelho', 1));
+
+  // Nada mudou: o peão fica em v4, a jogada continua pendente e o dado não foi gasto.
+  confereCasas({ vermelho: ['v4', 'c10', 'base', 'base'], amarelo: ['base', 'base', 'base', 'base'] });
+  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^0$/);
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('btn-rolar')).toBeDisabled();
+
+  // O outro peão ainda anda com o mesmo dado.
+  await user.click(peao('vermelho', 2));
+
+  confereCasas({ vermelho: ['v4', 'c13', 'base', 'base'], amarelo: ['base', 'base', 'base', 'base'] });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+});

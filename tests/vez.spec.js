@@ -110,3 +110,73 @@ test('TC-LD-20 seis sem jogada também passa', async () => {
   // Vez do Amarelo: pode rolar.
   expect(screen.getByTestId('btn-rolar')).toBeEnabled();
 });
+
+// ---- F6: lacunas de cobertura (TC-LD-38 em diante) ----
+
+// TC-LD-38: Vermelho na vez com o peão 1 em c1; o Amarelo tem um peão em c10. Dado 3.
+// Clicar num peão da cor que NÃO está na vez não move nada (data-movel = false, como no TC-LD-04).
+const PARAMS_CLIQUE_FORA_DA_VEZ = { vermelho: 'c1,base,base,base', amarelo: 'c10,base,base,base', dados: '3' };
+
+test('TC-LD-38 clique em peão da cor que não está na vez', async () => {
+  const user = await abrirJogo(PARAMS_CLIQUE_FORA_DA_VEZ);
+  await rolar(user);
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'true');
+  expect(peao('amarelo', 1)).toHaveAttribute('data-movel', 'false');
+
+  // O jogador clica no peão do adversário: nada acontece e a jogada continua pendente.
+  await user.click(peao('amarelo', 1));
+
+  confereCasas({ vermelho: ['c1', 'base', 'base', 'base'], amarelo: ['c10', 'base', 'base', 'base'] });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('btn-rolar')).toBeDisabled();
+
+  // Depois disso o Vermelho ainda consegue jogar com o mesmo dado.
+  await user.click(peao('vermelho', 1));
+
+  confereCasas({ vermelho: ['c4', 'base', 'base', 'base'], amarelo: ['c10', 'base', 'base', 'base'] });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+});
+
+// TC-LD-44: amarelo 1 em a2 (a2 + 6 passaria da chegada), peões 2 a 4 na chegada, dado 6 e ninguém na base:
+// com 6 e sem jogada a vez também passa (a mesma regra do TC-LD-20, agora para o Amarelo).
+const PARAMS_AMARELO_SEIS_SEM_JOGADA = { vez: 'amarelo', amarelo: 'a2,chegada,chegada,chegada', dados: '6' };
+
+test('TC-LD-44 amarelo com seis e sem jogada passa a vez', async () => {
+  const user = await abrirJogo(PARAMS_AMARELO_SEIS_SEM_JOGADA);
+
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^3$/);
+
+  await rolar(user);
+
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^6$/);
+  await esperaSemJogada(/^Vermelho$/);
+  confereImoveis(['amarelo']);
+  confereCasas({ ...TODOS_NA_BASE, amarelo: ['a2', 'chegada', 'chegada', 'chegada'] });
+  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^3$/);
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+});
+
+// TC-LD-46: o Vermelho tira 3 sem peão fora da base ("Sem jogada"); o Amarelo (peão 1 em c30) tira 4 e anda de verdade.
+// A mensagem "Sem jogada" não pode ficar na tela depois de uma jogada normal (seção 3: vazia nas outras situações).
+const PARAMS_MENSAGEM_SOME = { amarelo: 'c30,base,base,base', dados: '3,4' };
+
+test('TC-LD-46 a mensagem sem jogada some na jogada seguinte', async () => {
+  const user = await abrirJogo(PARAMS_MENSAGEM_SOME);
+
+  await rolar(user);
+  await esperaSemJogada(/^Amarelo$/);
+
+  await rolar(user);
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^4$/);
+  expect(peao('amarelo', 1)).toHaveAttribute('data-movel', 'true');
+  await user.click(peao('amarelo', 1));
+
+  confereCasas({ ...TODOS_NA_BASE, amarelo: ['c34', 'base', 'base', 'base'] });
+  // Dado 4, sem 6: a vez passa ao Vermelho. Condição positiva antes de conferir que a mensagem sumiu.
+  await waitFor(() => {
+    expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  });
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});

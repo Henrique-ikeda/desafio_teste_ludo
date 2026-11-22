@@ -218,3 +218,101 @@ test('TC-LD-30 amarelo sai da base na saída ocupada pelo vermelho', async () =>
   expect(screen.getByTestId('btn-rolar')).toBeEnabled();
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// ---- F6: lacunas de cobertura (TC-LD-39 em diante) ----
+
+const BASE = ['base', 'base', 'base', 'base'];
+
+// Helper local: abre o jogo, rola e move o peão n (padrão: o 1) da cor da vez, conferindo antes que ele pode andar.
+async function jogaPeao(params, cor, n = 1) {
+  const user = await abrirJogo(params);
+  await rolar(user);
+  expect(peao(cor, n)).toHaveAttribute('data-movel', 'true');
+  await user.click(peao(cor, n));
+  return user;
+}
+
+// TC-LD-39: vermelho 1 em c2 com dado 6 anda c3 ... c8 e captura o amarelo 1 em c8 (não é casa segura).
+// O 6 dá jogada extra, mesmo com captura.
+const PARAMS_CAPTURA_COM_SEIS = { vermelho: 'c2,base,base,base', amarelo: 'c8,base,base,base', dados: '6' };
+
+test('TC-LD-39 captura com 6 dá jogada extra', async () => {
+  await jogaPeao(PARAMS_CAPTURA_COM_SEIS, 'vermelho');
+
+  confereCasas({ vermelho: ['c8', 'base', 'base', 'base'], amarelo: BASE });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
+
+// TC-LD-40: o vermelho 1 em c5 anda 3 até c8, onde há 3 (depois 4) amarelos juntos: TODOS voltam para a base.
+const CAPTURA_VARIOS = [
+  [3, 'c8,c8,c8,base'],
+  [4, 'c8,c8,c8,c8'],
+];
+
+test.each(CAPTURA_VARIOS)('TC-LD-40 captura de %i peões da mesma casa', async (_quantos, amarelo) => {
+  await jogaPeao({ vermelho: 'c5,base,base,base', amarelo, dados: '3' }, 'vermelho');
+
+  confereCasas({ vermelho: ['c8', 'base', 'base', 'base'], amarelo: BASE });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
+
+// TC-LD-41: o amarelo 1 em c50 anda 5 (c51, c52, c1, c2, c3) e captura os DOIS vermelhos que estão em c3.
+const PARAMS_AMARELO_CAPTURA_DOIS = { vez: 'amarelo', amarelo: 'c50,base,base,base', vermelho: 'c3,c3,base,base', dados: '5' };
+
+test('TC-LD-41 amarelo captura dois peões', async () => {
+  await jogaPeao(PARAMS_AMARELO_CAPTURA_DOIS, 'amarelo');
+
+  confereCasas({ vermelho: BASE, amarelo: ['c3', 'base', 'base', 'base'] });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
+
+// TC-LD-42: o amarelo 1 em c50 anda 5 (c51, c52, c1, c2, c3) e passa por c2, onde está o vermelho 1, mas termina em c3.
+// Só captura quem termina na casa (o TC-LD-27 cobre o mesmo para o Vermelho).
+const PARAMS_AMARELO_PASSA_POR_CIMA = { vez: 'amarelo', amarelo: 'c50,base,base,base', vermelho: 'c2,base,base,base', dados: '5' };
+
+test('TC-LD-42 amarelo passa por cima sem capturar', async () => {
+  await jogaPeao(PARAMS_AMARELO_PASSA_POR_CIMA, 'amarelo');
+
+  confereCasas({ vermelho: ['c2', 'base', 'base', 'base'], amarelo: ['c3', 'base', 'base', 'base'] });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
+
+// TC-LD-43: as 4 estrelas também são seguras para o Amarelo (o TC-LD-25 só leva o Vermelho até elas).
+// Cada linha: [estrela, casa de onde o amarelo 1 anda 3 até ela]. O vermelho 1 já está na estrela.
+const ESTRELAS_DO_AMARELO = [
+  ['c9', 'c6'],
+  ['c22', 'c19'],
+  ['c35', 'c32'],
+  ['c48', 'c45'],
+];
+
+test.each(ESTRELAS_DO_AMARELO)('TC-LD-43 estrela é segura para o amarelo: %s', async (estrela, origem) => {
+  const params = { vez: 'amarelo', amarelo: origem + ',base,base,base', vermelho: estrela + ',base,base,base', dados: '3' };
+  await jogaPeao(params, 'amarelo');
+
+  confereCasas({ vermelho: [estrela, 'base', 'base', 'base'], amarelo: [estrela, 'base', 'base', 'base'] });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
+
+// TC-LD-49: peões da mesma cor dividem a casa também na saída e com o Amarelo (o TC-LD-17 só cobre o Vermelho no percurso).
+// Cada linha: [descrição, cor, parâmetros, peão que anda (o outro da cor já está na casa), casa final, vez esperada].
+const DIVIDE_CASA = [
+  ['Vermelho sai da base para a saída ocupada', 'vermelho', { vermelho: 'c1,base,base,base', dados: '6' }, 2, 'c1', /^Vermelho$/],
+  ['Amarelo sai da base para a saída ocupada', 'amarelo', { vez: 'amarelo', amarelo: 'c27,base,base,base', dados: '6' }, 2, 'c27', /^Amarelo$/],
+  ['Amarelo anda até o peão da mesma cor', 'amarelo', { vez: 'amarelo', amarelo: 'c30,c34,base,base', dados: '4' }, 1, 'c34', /^Vermelho$/],
+];
+
+test.each(DIVIDE_CASA)('TC-LD-49 mesma cor divide a casa: %s', async (_descricao, cor, params, n, casa, vezEsperada) => {
+  await jogaPeao(params, cor, n);
+
+  const outra = cor === 'vermelho' ? 'amarelo' : 'vermelho';
+  confereCasas({ [cor]: [casa, casa, 'base', 'base'], [outra]: BASE });
+  expect(screen.getByTestId('vez')).toHaveTextContent(vezEsperada);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});

@@ -175,3 +175,53 @@ test('TC-LD-29 nova partida depois da vitória', async () => {
 
   expect(screen.getByTestId('dado')).toHaveTextContent(/^[1-6]$/);
 });
+
+// ---- F6: lacunas de cobertura (TC-LD-36 em diante) ----
+
+const TODOS_NA_BASE = { vermelho: ['base', 'base', 'base', 'base'], amarelo: ['base', 'base', 'base', 'base'] };
+
+// Helper local (TCs 36 e 37): depois de "Nova partida" todos os peões estão na base, os contadores zerados,
+// sem mensagem, o Vermelho na vez e o dado vazio; e o jogo reabriu de verdade (uma rolagem nova funciona).
+async function confereNovaPartida(user) {
+  confereCasas(TODOS_NA_BASE);
+  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^0$/);
+  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^0$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('dado')).toBeEmptyDOMElement();
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+
+  // A lista "dados" já foi usada: o valor é aleatório, por isso só confere o intervalo.
+  await rolar(user);
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^[1-6]$/);
+}
+
+// TC-LD-36: o Amarelo começa (vez=amarelo), tira 6 e anda c30 -> c36; como tirou 6, continua na vez.
+// "Nova partida" tem de devolver a vez ao Vermelho, e não deixá-la com quem estava jogando.
+const PARAMS_NOVA_COM_AMARELO_NA_VEZ = { vez: 'amarelo', amarelo: 'c30,base,base,base', dados: '6' };
+
+test('TC-LD-36 nova partida com o amarelo na vez', async () => {
+  const user = await abrirJogo(PARAMS_NOVA_COM_AMARELO_NA_VEZ);
+  await rolar(user);
+  await user.click(peao('amarelo', 1));
+
+  // Pré-condição: a partida andou e, por ter tirado 6, o Amarelo continua na vez.
+  expect(peao('amarelo', 1)).toHaveAttribute('data-casa', 'c36');
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+
+  await user.click(screen.getByTestId('btn-nova-partida'));
+  await confereNovaPartida(user);
+});
+
+test('TC-LD-37 nova partida depois da vitória do amarelo', async () => {
+  // Cenário do TC-LD-28: o Amarelo vence. "Nova partida" também tem de reabrir o jogo depois da vitória dele.
+  const user = await abrirJogo(PARAMS_AMARELO_VENCE);
+  await venceComPeao4(user, 'amarelo');
+
+  // Pré-condição: o Amarelo venceu de verdade.
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Amarelo venceu!$/);
+  expect(screen.getByTestId('btn-rolar')).toBeDisabled();
+
+  await user.click(screen.getByTestId('btn-nova-partida'));
+  await confereNovaPartida(user);
+});
