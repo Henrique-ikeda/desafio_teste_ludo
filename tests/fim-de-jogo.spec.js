@@ -1,4 +1,3 @@
-import { waitFor } from '@testing-library/dom';
 // Tarefa F5 (vitória e nova partida). Contrato: seções 3 e 5 do PLANEJAMENTO.md.
 import { abrirJogo, peao, rolar, CORES, screen } from './helpers.js';
 
