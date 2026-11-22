@@ -258,3 +258,14 @@ test.each(CAPTURA_VARIOS)('TC-LD-40 captura de %i peões da mesma casa', async (
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// TC-LD-41: o amarelo 1 em c50 anda 5 (c51, c52, c1, c2, c3) e captura os DOIS vermelhos que estão em c3.
+const PARAMS_AMARELO_CAPTURA_DOIS = { vez: 'amarelo', amarelo: 'c50,base,base,base', vermelho: 'c3,c3,base,base', dados: '5' };
+
+test('TC-LD-41 amarelo captura dois peões', async () => {
+  await jogaPeao(PARAMS_AMARELO_CAPTURA_DOIS, 'amarelo');
+
+  confereCasas({ vermelho: BASE, amarelo: ['c3', 'base', 'base', 'base'] });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
