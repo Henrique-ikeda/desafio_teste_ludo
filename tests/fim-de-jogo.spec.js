@@ -101,3 +101,32 @@ test('TC-LD-23 nova partida', async () => {
 
   expect(screen.getByTestId('dado')).toHaveTextContent(/^[1-6]$/);
 });
+
+// TC-LD-24: o Vermelho 1 já chegou e não anda; o Vermelho 2 em c10 anda 2 casas até c12.
+const PARAMS_CHEGADA_NAO_ANDA = { vermelho: 'chegada,c10,base,base', dados: '2' };
+
+test('TC-LD-24 peão na chegada não anda', async () => {
+  // Peão na chegada não se mexe ao ser clicado; o clique não consome a jogada, e o outro peão anda.
+  const user = await abrirJogo(PARAMS_CHEGADA_NAO_ANDA);
+
+  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^1$/);
+
+  await rolar(user);
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'false');
+  expect(peao('vermelho', 2)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('vermelho', 1));
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-casa', 'chegada');
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+
+  await user.click(peao('vermelho', 2));
+
+  confereCasas({
+    vermelho: ['chegada', 'c12', 'base', 'base'],
+    amarelo: ['base', 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^1$/);
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+});
