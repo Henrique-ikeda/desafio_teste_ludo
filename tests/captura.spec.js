@@ -218,3 +218,29 @@ test('TC-LD-30 amarelo sai da base na saída ocupada pelo vermelho', async () =>
   expect(screen.getByTestId('btn-rolar')).toBeEnabled();
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// ---- F6: lacunas de cobertura (TC-LD-39 em diante) ----
+
+const BASE = ['base', 'base', 'base', 'base'];
+
+// Helper local: abre o jogo, rola e move o peão n (padrão: o 1) da cor da vez, conferindo antes que ele pode andar.
+async function jogaPeao(params, cor, n = 1) {
+  const user = await abrirJogo(params);
+  await rolar(user);
+  expect(peao(cor, n)).toHaveAttribute('data-movel', 'true');
+  await user.click(peao(cor, n));
+  return user;
+}
+
+// TC-LD-39: vermelho 1 em c2 com dado 6 anda c3 ... c8 e captura o amarelo 1 em c8 (não é casa segura).
+// O 6 dá jogada extra, mesmo com captura.
+const PARAMS_CAPTURA_COM_SEIS = { vermelho: 'c2,base,base,base', amarelo: 'c8,base,base,base', dados: '6' };
+
+test('TC-LD-39 captura com 6 dá jogada extra', async () => {
+  await jogaPeao(PARAMS_CAPTURA_COM_SEIS, 'vermelho');
+
+  confereCasas({ vermelho: ['c8', 'base', 'base', 'base'], amarelo: BASE });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
