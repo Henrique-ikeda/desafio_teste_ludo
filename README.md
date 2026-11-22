@@ -55,7 +55,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 - **Integração contínua:** o GitHub Actions ([`.github/workflows/testes.yml`](.github/workflows/testes.yml)) roda `npm ci` e `npm run verificar` em todo push e Pull Request, com Node 18, 20 e 22 no Ubuntu e no Windows, e publica como artefato o relatório JSON do Jest e a saída do verificador. O `npm run verificar:completo` roda à mão (*Run workflow*) ou em PR com o rótulo `entrega`.
 - **Os testes estão certos?** Falhar pelo motivo certo não prova que o resultado esperado está correto. Por isso os testes foram rodados, fora do repositório, contra uma implementação de referência (todos passam) e contra versões com um defeito de cada vez (todas são pegas): [validação dos testes do Henrique](docs/VALIDACAO-TESTES-HENRIQUE.md).
 
-## Casos de teste (31)
+## Casos de teste (33)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -88,8 +88,10 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 | TC-LD-22 | Nada funciona após a vitória | `tests/fim-de-jogo.spec.js` | `btn-rolar` desabilitado; `mensagem` continua "Vermelho venceu!"; `vez` não muda ao clicar `btn-rolar` | Felipe |
 | TC-LD-23 | Nova partida | `tests/fim-de-jogo.spec.js` | Os 8 peões na base; `vez` = "Vermelho"; `dado` vazio; `chegada-vermelho` = 0; `mensagem` vazia; `btn-rolar` habilitado | Felipe |
 | TC-LD-24 | Peão na chegada não anda | `tests/fim-de-jogo.spec.js` | `peao-vermelho-1` com `data-movel` = `false` e continua em `chegada`; `peao-vermelho-2` com `data-movel` = `true` e vai para `c12` | Felipe |
+| TC-LD-25 | As 8 casas seguras | `tests/captura.spec.js` | Vermelho + 3 até `c9`, `c14`, `c22`, `c27`, `c35`, `c40`, `c48` e Amarelo + 3 até `c1`, cada casa com um peão adversário: os dois peões ficam na casa segura; nenhum volta para a base | Felipe |
 | TC-LD-26 | Amarelo captura (e cruza `c52` → `c1`) | `tests/captura.spec.js` | `peao-amarelo-1` em `c3`; `peao-vermelho-1` volta para `base`; `vez` = "Vermelho" | Felipe |
 | TC-LD-27 | Passar por cima não captura | `tests/captura.spec.js` | `peao-vermelho-1` em `c8`; `peao-amarelo-1` continua em `c6` (só captura quem termina na casa) | Felipe |
+| TC-LD-30 | Amarelo sai da base na saída ocupada pelo Vermelho | `tests/captura.spec.js` | `peao-amarelo-1` e `peao-vermelho-1` os dois em `c27`; `vez` = "Amarelo" (tirou 6) | Felipe |
 
 ## Estrutura
 

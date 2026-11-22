@@ -234,8 +234,10 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | TC-LD-22 | Nada funciona após a vitória | Depois do TC-LD-21 | `btn-rolar` desabilitado; `mensagem` continua "Vermelho venceu!"; `vez` não muda ao clicar `btn-rolar` |
 | TC-LD-23 | Nova partida | `?vermelho=c10,c20,base,base&amarelo=c30,base,base,base&dados=6`. Rolar; clicar `peao-vermelho-3`; clicar `btn-nova-partida` | Os 8 peões na base; `vez` = "Vermelho"; `dado` vazio; `chegada-vermelho` = 0; `mensagem` vazia; `btn-rolar` habilitado |
 | TC-LD-24 | Peão na chegada não anda | `?vermelho=chegada,c10,base,base&dados=2`. Rolar; clicar `peao-vermelho-1`; clicar `peao-vermelho-2` | `peao-vermelho-1` com `data-movel` = `false` e continua em `chegada`; `peao-vermelho-2` com `data-movel` = `true` e vai para `c12` |
+| TC-LD-25 | As 8 casas seguras | Um jogo por linha (`test.each`). Vermelho anda 3 até a casa segura onde está o `peao-amarelo-1` (`?vermelho=<origem>,base,base,base&amarelo=<segura>,base,base,base&dados=3`): `c6` → `c9`, `c11` → `c14`, `c19` → `c22`, `c24` → `c27`, `c32` → `c35`, `c37` → `c40`, `c45` → `c48`. Para `c1`: `?vez=amarelo&vermelho=c1,base,base,base&amarelo=c50,base,base,base&dados=3` (Amarelo anda `c50` → `c1`). Rolar; clicar o peão 1 da cor da vez | Em cada linha, os dois peões na casa segura; nenhum volta para a base |
 | TC-LD-26 | Amarelo captura (e cruza `c52` → `c1`) | `?vez=amarelo&amarelo=c50,base,base,base&vermelho=c3,base,base,base&dados=5`. Rolar; clicar `peao-amarelo-1` | `peao-amarelo-1` em `c3`; `peao-vermelho-1` volta para `base`; `vez` = "Vermelho" |
 | TC-LD-27 | Passar por cima não captura | `?vermelho=c5,base,base,base&amarelo=c6,base,base,base&dados=3`. Rolar; clicar `peao-vermelho-1` | `peao-vermelho-1` em `c8`; `peao-amarelo-1` continua em `c6` (só captura quem termina na casa) |
+| TC-LD-30 | Amarelo sai da base na saída ocupada pelo Vermelho | `?vez=amarelo&vermelho=c27,base,base,base&dados=6`. Rolar; clicar `peao-amarelo-1` | `peao-amarelo-1` e `peao-vermelho-1` os dois em `c27`; `vez` = "Amarelo" (tirou 6) |
 
 ## 6. Fluxo de trabalho no Git
 
