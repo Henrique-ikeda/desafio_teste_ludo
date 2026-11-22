@@ -22,7 +22,7 @@ Num repositório "somente testes", falhar pelo motivo certo não prova que o tes
 | Suíte completa (Henrique + Felipe), 3 execuções seguidas, síncrona e assíncrona | 46/46 nas 6 execuções (nenhum teste intermitente) |
 | Referência assíncrona **sem** a proteção contra timers de página trocada | 25/25 do Felipe passam; na suíte completa só falha o TC-LD-02, o caso já descrito no achado 1 do Henrique |
 
-São 25 testes porque o TC-LD-25 é um `test.each` de 8 linhas: 10 TCs em `captura.spec.js` (17 testes), 3 em `vez.spec.js` e 6 em `fim-de-jogo.spec.js`. Na versão assíncrona, a referência ignora timers de uma página que já foi trocada, a mesma proteção que o Henrique documentou.
+São 25 testes porque o TC-LD-25 é um `test.each` de 8 linhas: 9 TCs em `captura.spec.js` (16 testes), 3 em `vez.spec.js` e 6 em `fim-de-jogo.spec.js`. Na versão assíncrona, a referência ignora timers de uma página que já foi trocada, a mesma proteção que o Henrique documentou.
 
 ## Mutantes (um defeito por vez na referência)
 
@@ -63,5 +63,5 @@ São 25 testes porque o TC-LD-25 é um `test.each` de 8 linhas: 10 TCs em `captu
 2. **Dois peões da mesma cor formam barreira?** A seção 1 só diz que peões da mesma cor podem dividir a casa. O TC-LD-14 assume que não há barreira (os dois amarelos são capturados juntos) e o TC-LD-17 assume que dividir casa é permitido. Vale escrever na seção 1 que não existe bloqueio.
 3. **`vez` depois da vitória.** A spec não diz o que `vez` mostra quando a partida acaba. O TC-LD-22 só exige que ela não mude ao clicar `btn-rolar` (e que seja "Vermelho" ou "Amarelo", não vazia).
 4. **Quando a mensagem de vitória some.** Os testes só exigem que ela continue depois da vitória (TC-LD-22) e que suma com "Nova partida" (TC-LD-29). A spec não diz se outra ação também a limpa.
-5. **"Peão na reta final ou na chegada não pode ser capturado."** A frase está na seção 1, mas nenhum teste a exercita: como só o dono entra na própria reta (TC-LD-34) e a chegada não é casa do percurso, não existe jogada do adversário que termine ali. O revisor sugeriu um caso, mas ele não teria como falhar por um motivo diferente do TC-LD-34. Fica registrado.
+5. **"Peão na reta final ou na chegada não pode ser capturado."** A frase está na seção 1, mas nenhum teste a exercita: como só o dono entra na própria reta (TC-LD-34) e a chegada não é casa do percurso, não existe jogada do adversário que termine ali. Um caso de teste para essa frase não teria como falhar por um motivo diferente do TC-LD-34, por isso fica só registrado.
 6. **Timers entre testes.** Os testes do Felipe não dependem da proteção contra timers de página trocada (passam também sem ela), porque nenhum deles abre várias partidas com a vez passando com atraso. O achado 1 do Henrique continua valendo para o TC-LD-02.
