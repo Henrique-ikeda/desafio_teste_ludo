@@ -12,6 +12,26 @@ function confereCasas(esperado) {
   }
 }
 
+const TODOS_NA_BASE = { vermelho: ['base', 'base', 'base', 'base'], amarelo: ['base', 'base', 'base', 'base'] };
+
+// Helper local: a spec não diz se a vez passa na hora ou com atraso. Espera a condição positiva
+// ("Sem jogada" e a vez já com o outro jogador) antes de o teste conferir as negativas.
+async function esperaSemJogada(vezEsperada) {
+  await waitFor(() => {
+    expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Sem jogada$/);
+    expect(screen.getByTestId('vez')).toHaveTextContent(vezEsperada);
+  });
+}
+
+// Helper local: nenhum peão das cores indicadas pode andar (data-movel = false).
+function confereImoveis(cores) {
+  for (const cor of cores) {
+    for (let n = 1; n <= 4; n++) {
+      expect(peao(cor, n)).toHaveAttribute('data-movel', 'false');
+    }
+  }
+}
+
 // TC-LD-18: vermelho 1 em c1, os outros na base, dado 3 (sem 6: a vez deve passar para o Amarelo depois de mover).
 const PARAMS_VEZ_ALTERNA_SEM_SEIS = { vermelho: 'c1,base,base,base', dados: '3' };
 
@@ -50,40 +70,17 @@ test('TC-LD-19 os dois sem jogada', async () => {
   await rolar(user);
 
   expect(screen.getByTestId('dado')).toHaveTextContent(/^3$/);
-
-  // A spec não diz se a vez passa na hora ou com atraso: espera a condição positiva.
-  await waitFor(() => {
-    expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Sem jogada$/);
-    expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
-  });
-
-  for (let n = 1; n <= 4; n++) {
-    expect(peao('vermelho', n)).toHaveAttribute('data-movel', 'false');
-  }
-  confereCasas({
-    vermelho: ['base', 'base', 'base', 'base'],
-    amarelo: ['base', 'base', 'base', 'base'],
-  });
+  await esperaSemJogada(/^Amarelo$/);
+  confereImoveis(['vermelho']);
+  confereCasas(TODOS_NA_BASE);
 
   // 2ª rolagem (Amarelo): dado 4.
   await rolar(user);
 
   expect(screen.getByTestId('dado')).toHaveTextContent(/^4$/);
-
-  await waitFor(() => {
-    expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Sem jogada$/);
-    expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
-  });
-
-  for (const cor of CORES) {
-    for (let n = 1; n <= 4; n++) {
-      expect(peao(cor, n)).toHaveAttribute('data-movel', 'false');
-    }
-  }
-  confereCasas({
-    vermelho: ['base', 'base', 'base', 'base'],
-    amarelo: ['base', 'base', 'base', 'base'],
-  });
+  await esperaSemJogada(/^Vermelho$/);
+  confereImoveis(CORES);
+  confereCasas(TODOS_NA_BASE);
 
   // Voltou a ser a vez do Vermelho: pode rolar de novo.
   expect(screen.getByTestId('btn-rolar')).toBeEnabled();
@@ -102,16 +99,8 @@ test('TC-LD-20 seis sem jogada também passa', async () => {
   await rolar(user);
 
   expect(screen.getByTestId('dado')).toHaveTextContent(/^6$/);
-
-  // A spec não diz se a vez passa na hora ou com atraso: espera a condição positiva.
-  await waitFor(() => {
-    expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Sem jogada$/);
-    expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
-  });
-
-  for (let n = 1; n <= 4; n++) {
-    expect(peao('vermelho', n)).toHaveAttribute('data-movel', 'false');
-  }
+  await esperaSemJogada(/^Amarelo$/);
+  confereImoveis(['vermelho']);
   confereCasas({
     vermelho: ['v2', 'chegada', 'chegada', 'chegada'],
     amarelo: ['base', 'base', 'base', 'base'],
