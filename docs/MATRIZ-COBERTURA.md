@@ -10,7 +10,7 @@ Cada regra da seção 1 do PLANEJAMENTO.md tem pelo menos um caso de teste que o
 | 4 | Sair da base só com 6, na casa de saída | 03, 04, 16, 31 |
 | 5 | Tirou 6, joga de novo | 05, 31, 32 |
 | 6 | Andar exatamente o número do dado; só peão que pode andar se mexe | 06, 08, 24, 32 |
-| 7 | Percurso circular (Amarelo passa de `c52` para `c1`) | 09, 33 |
+| 7 | Percurso circular (Amarelo passa de `c52` para `c1`) | 09, 26, 33 |
 | 8 | Reta final de cada cor; só o dono entra na própria reta | 10, 11, 33, 34 |
 | 9 | Chegada só com número exato | 12, 20, 21, 33, 35 |
 | 10 | Sem jogada: a vez passa sozinha (mesmo com 6) | 03, 12, 19, 20, 35 |
