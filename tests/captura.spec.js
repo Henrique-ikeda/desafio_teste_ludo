@@ -73,3 +73,23 @@ test('TC-LD-26 amarelo captura', async () => {
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// TC-LD-27: vermelho 1 em c5 com dado 3 passa por c6 (onde está o amarelo 1) e termina em c8: não captura (seção 3, parâmetros vermelho, amarelo e dados).
+const PARAMS_PASSAR_POR_CIMA = { vermelho: 'c5,base,base,base', amarelo: 'c6,base,base,base', dados: '3' };
+
+test('TC-LD-27 passar por cima não captura', async () => {
+  // Vermelho 1 passa por c6 e para em c8: só captura quem termina na casa, então o amarelo 1 continua em c6.
+  const user = await abrirJogo(PARAMS_PASSAR_POR_CIMA);
+  await rolar(user);
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('vermelho', 1));
+
+  confereCasas({
+    vermelho: ['c8', 'base', 'base', 'base'],
+    amarelo: ['c6', 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
