@@ -93,3 +93,26 @@ test('TC-LD-27 passar por cima não captura', async () => {
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// ---- F3: casas seguras ----
+
+// TC-LD-15: vermelho 1 em c5 com dado 4 termina em c9, que é estrela (casa segura): não captura (seção 3, parâmetros vermelho, amarelo e dados).
+// c6, c7, c8, c9: c9 é estrela, casa segura: não há captura.
+const PARAMS_ESTRELA_SEGURA = { vermelho: 'c5,base,base,base', amarelo: 'c9,base,base,base', dados: '4' };
+
+test('TC-LD-15 estrela é segura', async () => {
+  // Vermelho 1 anda de c5 para c9, onde está o amarelo 1: como c9 é estrela, os dois ficam na casa.
+  const user = await abrirJogo(PARAMS_ESTRELA_SEGURA);
+  await rolar(user);
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('vermelho', 1));
+
+  confereCasas({
+    vermelho: ['c9', 'base', 'base', 'base'],
+    amarelo: ['c9', 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
