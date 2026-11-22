@@ -70,3 +70,34 @@ test('TC-LD-22 nada funciona após a vitória', async () => {
   expect(screen.getByTestId('dado')).toHaveTextContent(/^1$/);
   expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Vermelho venceu!$/);
 });
+
+// TC-LD-23: o 6 tira o Vermelho 3 da base para c1. Depois, "Nova partida" tem de zerar tudo, inclusive o Amarelo em c30.
+const PARAMS_NOVA_PARTIDA = { vermelho: 'c10,c20,base,base', amarelo: 'c30,base,base,base', dados: '6' };
+
+test('TC-LD-23 nova partida', async () => {
+  // Depois de "Nova partida" todos os peões voltam à base, o Vermelho começa e o dado fica vazio.
+  const user = await abrirJogo(PARAMS_NOVA_PARTIDA);
+  await rolar(user);
+  await user.click(peao('vermelho', 3));
+
+  // Pré-condição: a partida andou (o Vermelho 3 saiu da base para c1).
+  expect(peao('vermelho', 3)).toHaveAttribute('data-casa', 'c1');
+
+  await user.click(screen.getByTestId('btn-nova-partida'));
+
+  confereCasas({
+    vermelho: ['base', 'base', 'base', 'base'],
+    amarelo: ['base', 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('dado')).toBeEmptyDOMElement();
+  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^0$/);
+  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^0$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+
+  // Uma rolagem nova funciona (o valor é aleatório, por isso só confere o intervalo).
+  await rolar(user);
+
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^[1-6]$/);
+});
