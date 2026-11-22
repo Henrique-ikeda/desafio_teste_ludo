@@ -1,8 +1,14 @@
 # desafio_teste_ludo
 
+[![Testes](https://github.com/Henrique-ikeda/desafio_teste_ludo/actions/workflows/testes.yml/badge.svg)](https://github.com/Henrique-ikeda/desafio_teste_ludo/actions/workflows/testes.yml)
+
 Desafio de testes: casos de teste para testar uma **partida de Ludo para 2 jogadores**, com **casos de teste em JavaScript para testar JavaScript** (Jest + Testing Library).
 
 ## Especificação do desafio
+
+Enunciado do professor ([desafios.md](https://github.com/JoaoChoma/teste_software_2026/blob/main/desafios.md), "Ludo"): *casos de teste para testar uma partida para 02 jogadores; casos de teste em JavaScript para testar JavaScript.* Repositório com o nome exigido: `desafio_teste_ludo`.
+
+Regras do Ludo testadas:
 
 - Dois jogadores, Vermelho e Amarelo, com 4 peões cada, começando na base.
 - Percurso de 52 casas; cada cor dá uma volta e entra na sua reta final de 5 casas até a chegada.
@@ -17,8 +23,8 @@ Regras completas, contrato da tela e divisão das tarefas: [PLANEJAMENTO.md](PLA
 
 | Nome | RA | GitHub | Parte no trabalho |
 |---|---|---|---|
-| Henrique | RA_HENRIQUE | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto e 12 casos de teste (início, dado, sair da base, mover, reta final e chegada) |
-| Felipe | RA_FELIPE | [GITHUB_FELIPE](https://github.com/GITHUB_FELIPE) | Tarefas F1–F5: CI, README e 12 casos de teste (captura, casas seguras, vez, vitória e nova partida) |
+| Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto e casos de teste de início, dado, sair da base, mover, reta final e chegada (TC-LD-01 a 12 e 31 em diante) |
+| Felipe Galeti Gôngora | 24036480-2 | [FGaleti](https://github.com/FGaleti) | Tarefas F1–F5: CI, README e casos de teste de captura, casas seguras, vez, vitória e nova partida (TC-LD-13 a 24, mais os extras da faixa reservada 25–30) |
 
 As contribuições de cada um aparecem em **Insights → Contributors** e nos commits.
 
@@ -36,6 +42,8 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 
 ## Funcionamento dos casos de teste
 
+> **Aviso para a correção:** `npm test` termina com falhas **de propósito** (o jogo não é implementado; a entrega são os casos de teste). O comando que valida a entrega é `npm run verificar`, que sai com código 0 quando todos os testes falham pelo motivo certo.
+
 **Situação:** somente os casos de teste. O jogo não está implementado, então **todos os testes falham de propósito**, pelo motivo certo (o comportamento ainda não existe). O `npm run verificar` confere isso.
 
 - **Ferramentas:** [Jest](https://jestjs.io) roda os testes; [Testing Library](https://testing-library.com) (`@testing-library/dom`, `user-event` e `jest-dom`) simula o jogador; o [jsdom](https://github.com/jsdom/jsdom) faz o papel do navegador, sem precisar abrir um.
@@ -44,7 +52,8 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 - **Sem depender de sorte:** o dado é passado pelo parâmetro de URL `dados` (ex.: `6,3,5`) e as posições dos peões pelos parâmetros `vermelho`, `amarelo` e `vez`. Assim cada regra começa exatamente na situação dela (um peão a 4 casas de uma estrela, outro na reta final). As casas de cada movimento foram conferidas por script.
 - **Rastreabilidade:** cada teste tem no título o ID do caso (`TC-LD-NN`), o mesmo da tabela abaixo e da seção 5 do PLANEJAMENTO.md. A [matriz de cobertura](docs/MATRIZ-COBERTURA.md) liga cada regra do jogo aos seus casos.
 - **Metodologia:** TDD, um caso de teste por vez: escrever, rodar, ver falhar pelo motivo certo e fazer o commit `test:`. Uso de IA documentado em [docs/TDD-COM-IA.md](docs/TDD-COM-IA.md).
-- **Integração contínua:** o GitHub Actions roda `npm ci` e `npm run verificar` em todo push e Pull Request.
+- **Integração contínua:** o GitHub Actions ([`.github/workflows/testes.yml`](.github/workflows/testes.yml)) roda `npm ci` e `npm run verificar` em todo push e Pull Request, com Node 18, 20 e 22 no Ubuntu e no Windows, e publica como artefato o relatório JSON do Jest e a saída do verificador. O `npm run verificar:completo` roda à mão (*Run workflow*) ou em PR com o rótulo `entrega`.
+- **Os testes estão certos?** Falhar pelo motivo certo não prova que o resultado esperado está correto. Por isso os testes foram rodados, fora do repositório, contra uma implementação de referência (todos passam) e contra versões com um defeito de cada vez (todas são pegas): [validação dos testes do Henrique](docs/VALIDACAO-TESTES-HENRIQUE.md).
 
 ## Casos de teste (29)
 
