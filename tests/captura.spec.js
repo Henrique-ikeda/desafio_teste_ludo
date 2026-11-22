@@ -193,3 +193,28 @@ test.each(CASAS_SEGURAS_TODAS)('TC-LD-25 as 8 casas seguras: %s', async (casa, c
   expect(screen.getByTestId('vez')).toHaveTextContent(cor === 'vermelho' ? /^Amarelo$/ : /^Vermelho$/);
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// TC-LD-30: amarelo 1 sai da base com dado 6 para c27, onde está o vermelho 1: a saída é segura nos dois sentidos, não captura (seção 3, parâmetros vez, vermelho e dados).
+// O 6 tira o amarelo 1 da base para c27, a saída do Amarelo, onde está o vermelho 1; a saída é segura nos dois sentidos.
+const PARAMS_SAIDA_AMARELO_OCUPADA = { vez: 'amarelo', vermelho: 'c27,base,base,base', dados: '6' };
+
+test('TC-LD-30 amarelo sai da base na saída ocupada pelo vermelho', async () => {
+  // Amarelo 1 sai da base para c27, onde está o vermelho 1: como c27 é segura, os dois ficam na casa e o amarelo joga de novo.
+  const user = await abrirJogo(PARAMS_SAIDA_AMARELO_OCUPADA);
+
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+
+  await rolar(user);
+
+  expect(peao('amarelo', 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('amarelo', 1));
+
+  confereCasas({
+    vermelho: ['c27', 'base', 'base', 'base'],
+    amarelo: ['c27', 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
