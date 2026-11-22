@@ -249,6 +249,7 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | TC-LD-41 | Amarelo captura dois peões | `?vez=amarelo&amarelo=c50,base,base,base&vermelho=c3,c3,base,base&dados=5`. Rolar; clicar `peao-amarelo-1` | `peao-amarelo-1` em `c3`; `peao-vermelho-1` e `peao-vermelho-2` voltam para `base`; `vez` = "Vermelho" |
 | TC-LD-42 | Amarelo passa por cima sem capturar | `?vez=amarelo&amarelo=c50,base,base,base&vermelho=c2,base,base,base&dados=5`. Rolar; clicar `peao-amarelo-1` | `peao-amarelo-1` em `c3` (passou por `c2`); `peao-vermelho-1` continua em `c2`; `vez` = "Vermelho" |
 | TC-LD-43 | Estrela é segura para o Amarelo | Um jogo por linha (`test.each`). Amarelo anda 3 até a estrela onde está o `peao-vermelho-1` (`?vez=amarelo&amarelo=<origem>,base,base,base&vermelho=<estrela>,base,base,base&dados=3`): `c6` → `c9`, `c19` → `c22`, `c32` → `c35`, `c45` → `c48`. Rolar; clicar `peao-amarelo-1` | Em cada linha, os dois peões na estrela; nenhum volta para a base; `vez` = "Vermelho" |
+| TC-LD-44 | Amarelo com seis e sem jogada passa a vez | `?vez=amarelo&amarelo=a2,chegada,chegada,chegada&dados=6`. Rolar | Os 4 amarelos com `data-movel` = `false` (a2 + 6 passa da chegada e não há peão na base); `mensagem` = "Sem jogada"; `vez` = "Vermelho"; `chegada-amarelo` = 3 |
 
 ## 6. Fluxo de trabalho no Git
 
