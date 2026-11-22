@@ -157,3 +157,26 @@ test('TC-LD-44 amarelo com seis e sem jogada passa a vez', async () => {
   expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^3$/);
   expect(screen.getByTestId('btn-rolar')).toBeEnabled();
 });
+
+// TC-LD-46: o Vermelho tira 3 sem peão fora da base ("Sem jogada"); o Amarelo (peão 1 em c30) tira 4 e anda de verdade.
+// A mensagem "Sem jogada" não pode ficar na tela depois de uma jogada normal (seção 3: vazia nas outras situações).
+const PARAMS_MENSAGEM_SOME = { amarelo: 'c30,base,base,base', dados: '3,4' };
+
+test('TC-LD-46 a mensagem sem jogada some na jogada seguinte', async () => {
+  const user = await abrirJogo(PARAMS_MENSAGEM_SOME);
+
+  await rolar(user);
+  await esperaSemJogada(/^Amarelo$/);
+
+  await rolar(user);
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^4$/);
+  expect(peao('amarelo', 1)).toHaveAttribute('data-movel', 'true');
+  await user.click(peao('amarelo', 1));
+
+  confereCasas({ ...TODOS_NA_BASE, amarelo: ['c34', 'base', 'base', 'base'] });
+  // Dado 4, sem 6: a vez passa ao Vermelho. Condição positiva antes de conferir que a mensagem sumiu.
+  await waitFor(() => {
+    expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  });
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
