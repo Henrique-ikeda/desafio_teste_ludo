@@ -55,7 +55,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 - **Integração contínua:** o GitHub Actions ([`.github/workflows/testes.yml`](.github/workflows/testes.yml)) roda `npm ci` e `npm run verificar` em todo push e Pull Request, com Node 18, 20 e 22 no Ubuntu e no Windows, e publica como artefato o relatório JSON do Jest e a saída do verificador. O `npm run verificar:completo` roda à mão (*Run workflow*) ou em PR com o rótulo `entrega`.
 - **Os testes estão certos?** Falhar pelo motivo certo não prova que o resultado esperado está correto. Por isso os testes foram rodados, fora do repositório, contra uma implementação de referência (todos passam) e contra versões com um defeito de cada vez (todas são pegas): [validação dos testes do Henrique](docs/VALIDACAO-TESTES-HENRIQUE.md).
 
-## Casos de teste (33)
+## Casos de teste (35)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -91,7 +91,11 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 | TC-LD-25 | As 8 casas seguras | `tests/captura.spec.js` | Vermelho + 3 até `c9`, `c14`, `c22`, `c27`, `c35`, `c40`, `c48` e Amarelo + 3 até `c1`, cada casa com um peão adversário: os dois peões ficam na casa segura; nenhum volta para a base | Felipe |
 | TC-LD-26 | Amarelo captura (e cruza `c52` → `c1`) | `tests/captura.spec.js` | `peao-amarelo-1` em `c3`; `peao-vermelho-1` volta para `base`; `vez` = "Vermelho" | Felipe |
 | TC-LD-27 | Passar por cima não captura | `tests/captura.spec.js` | `peao-vermelho-1` em `c8`; `peao-amarelo-1` continua em `c6` (só captura quem termina na casa) | Felipe |
+| TC-LD-28 | Amarelo vence | `tests/fim-de-jogo.spec.js` | `peao-amarelo-4` em `chegada`; `chegada-amarelo` = 4; `mensagem` = "Amarelo venceu!"; `btn-rolar` desabilitado | Felipe |
+| TC-LD-29 | Nova partida depois da vitória | `tests/fim-de-jogo.spec.js` | Os 8 peões na base; `chegada-vermelho` = 0; `mensagem` vazia; `vez` = "Vermelho"; `btn-rolar` habilitado | Felipe |
 | TC-LD-30 | Amarelo sai da base na saída ocupada pelo Vermelho | `tests/captura.spec.js` | `peao-amarelo-1` e `peao-vermelho-1` os dois em `c27`; `vez` = "Amarelo" (tirou 6) | Felipe |
+
+**Validação dos casos de teste** (fora do repositório, contra uma implementação de referência e contra mutantes): [testes do Henrique](docs/VALIDACAO-TESTES-HENRIQUE.md) e [testes do Felipe](docs/VALIDACAO-TESTES-FELIPE.md).
 
 ## Estrutura
 
@@ -102,5 +106,5 @@ tests/helpers.js              abrirJogo(), posições e dados fixos e atalhos
 tests/*.spec.js               casos de teste
 scripts/verificar-testes.mjs  verificador (npm run verificar e CI)
 PLANEJAMENTO.md               regras, contrato, tarefas e casos de teste
-docs/                         matriz de cobertura e TDD com IA
+docs/                         matriz de cobertura, TDD com IA e validação dos testes
 ```

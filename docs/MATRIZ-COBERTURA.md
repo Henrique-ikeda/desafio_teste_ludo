@@ -18,7 +18,7 @@ Cada regra da seção 1 do PLANEJAMENTO.md tem pelo menos um caso de teste que o
 | 12 | Captura manda todos os peões adversários da casa para a base (com as duas cores; só quem termina na casa) | 13, 14, 26, 27 |
 | 13 | Casas seguras (saídas e estrelas) | 15, 16, 25, 30 |
 | 14 | Peões da mesma cor dividem a casa | 17 |
-| 15 | Vitória com os 4 na chegada; depois disso nada funciona | 21, 22 |
-| 16 | Nova partida | 23 |
+| 15 | Vitória com os 4 na chegada; depois disso nada funciona | 21, 22, 28 |
+| 16 | Nova partida | 23, 29 |
 
 **Para que serve:** se alguém fosse implementar o jogo só a partir destes testes, toda regra do jogo teria um teste exigindo que ela exista.
