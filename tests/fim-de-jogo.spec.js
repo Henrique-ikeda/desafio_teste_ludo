@@ -156,3 +156,33 @@ test('TC-LD-28 amarelo vence', async () => {
   expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Amarelo venceu!$/);
   expect(screen.getByTestId('btn-rolar')).toBeDisabled();
 });
+
+test('TC-LD-29 nova partida depois da vitória', async () => {
+  // Depois de vencer, "Nova partida" zera o jogo e o dado volta a rolar.
+  const user = await abrirJogo(PARAMS_VITORIA);
+  await rolar(user);
+  await user.click(peao('vermelho', 4));
+
+  // Pré-condição: o Vermelho venceu de fato.
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Vermelho venceu!$/);
+  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^4$/);
+  expect(screen.getByTestId('btn-rolar')).toBeDisabled();
+
+  await user.click(screen.getByTestId('btn-nova-partida'));
+
+  confereCasas({
+    vermelho: ['base', 'base', 'base', 'base'],
+    amarelo: ['base', 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^0$/);
+  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^0$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('dado')).toBeEmptyDOMElement();
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+
+  // O jogo reabriu de verdade: uma rolagem nova funciona (só confere o intervalo).
+  await rolar(user);
+
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^[1-6]$/);
+});
