@@ -50,3 +50,26 @@ test('TC-LD-14 captura de dois peões', async () => {
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// TC-LD-26: amarelo 1 em c50 com dado 5 cruza c52 → c1 e captura o vermelho 1 em c3 (seção 3, parâmetros vez, amarelo, vermelho e dados).
+const PARAMS_AMARELO_CAPTURA = { vez: 'amarelo', amarelo: 'c50,base,base,base', vermelho: 'c3,base,base,base', dados: '5' };
+
+test('TC-LD-26 amarelo captura', async () => {
+  // Amarelo 1 anda c51, c52, c1, c2, c3: cruza c52 → c1 e para em c3 (não é casa segura), capturando o vermelho 1.
+  const user = await abrirJogo(PARAMS_AMARELO_CAPTURA);
+
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+
+  await rolar(user);
+
+  expect(peao('amarelo', 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('amarelo', 1));
+
+  confereCasas({
+    vermelho: ['base', 'base', 'base', 'base'],
+    amarelo: ['c3', 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
