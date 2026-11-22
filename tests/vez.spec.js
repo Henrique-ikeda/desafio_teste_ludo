@@ -137,3 +137,23 @@ test('TC-LD-38 clique em peão da cor que não está na vez', async () => {
   confereCasas({ vermelho: ['c4', 'base', 'base', 'base'], amarelo: ['c10', 'base', 'base', 'base'] });
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
 });
+
+// TC-LD-44: amarelo 1 em a2 (a2 + 6 passaria da chegada), peões 2 a 4 na chegada, dado 6 e ninguém na base:
+// com 6 e sem jogada a vez também passa (a mesma regra do TC-LD-20, agora para o Amarelo).
+const PARAMS_AMARELO_SEIS_SEM_JOGADA = { vez: 'amarelo', amarelo: 'a2,chegada,chegada,chegada', dados: '6' };
+
+test('TC-LD-44 amarelo com seis e sem jogada passa a vez', async () => {
+  const user = await abrirJogo(PARAMS_AMARELO_SEIS_SEM_JOGADA);
+
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^3$/);
+
+  await rolar(user);
+
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^6$/);
+  await esperaSemJogada(/^Vermelho$/);
+  confereImoveis(['amarelo']);
+  confereCasas({ ...TODOS_NA_BASE, amarelo: ['a2', 'chegada', 'chegada', 'chegada'] });
+  expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^3$/);
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+});
