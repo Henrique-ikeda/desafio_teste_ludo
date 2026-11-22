@@ -265,14 +265,8 @@ test('TC-LD-35 chegada exata do amarelo', async () => {
 
 // ---- F6: lacunas de cobertura (TC-LD-47) ----
 
-// Helper local: confere a casa dos 8 peões de uma vez (peões não citados ficam na base).
-function confereCasas(esperado) {
-  for (const cor of ['vermelho', 'amarelo']) {
-    for (let n = 1; n <= 4; n++) {
-      expect(peao(cor, n)).toHaveAttribute('data-casa', esperado[cor][n - 1]);
-    }
-  }
-}
+// Helper local: confere a casa dos 8 peões (peões não citados ficam na base).
+const confereCasas = (esperado) => ['vermelho', 'amarelo'].forEach((cor) => esperado[cor].forEach((casa, i) => expect(peao(cor, i + 1)).toHaveAttribute('data-casa', casa)));
 
 // TC-LD-47: vermelho 1 em v4 (v4 + 3 passaria da chegada) e vermelho 2 em c10, dado 3: só o 2 pode andar (c10 -> c13).
 const PARAMS_PASSA_DA_CHEGADA_CLICADO = { vermelho: 'v4,c10,base,base', dados: '3' };

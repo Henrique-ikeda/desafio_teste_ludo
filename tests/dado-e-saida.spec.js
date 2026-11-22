@@ -202,14 +202,8 @@ test('TC-LD-32 com 6 pode mover um peão do percurso em vez de sair', async () =
 
 // ---- F6: lacunas de cobertura (TC-LD-45 e TC-LD-48) ----
 
-// Helper local: confere a casa dos 8 peões de uma vez (peões não citados ficam na base).
-function confereCasas(esperado) {
-  for (const cor of CORES) {
-    for (let n = 1; n <= 4; n++) {
-      expect(peao(cor, n)).toHaveAttribute('data-casa', esperado[cor][n - 1]);
-    }
-  }
-}
+// Helper local: confere a casa dos 8 peões (peões não citados ficam na base).
+const confereCasas = (esperado) => CORES.forEach((cor) => esperado[cor].forEach((casa, i) => expect(peao(cor, i + 1)).toHaveAttribute('data-casa', casa)));
 
 // TC-LD-45: Amarelo com o peão 1 em c30 e os outros na base, dado 6: pode andar c30 -> c36 OU sair da base
 // (o mesmo que o TC-LD-32 faz com o Vermelho).
