@@ -299,3 +299,20 @@ test.each(ESTRELAS_DO_AMARELO)('TC-LD-43 estrela é segura para o amarelo: %s', 
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// TC-LD-49: peões da mesma cor dividem a casa também na saída e com o Amarelo (o TC-LD-17 só cobre o Vermelho no percurso).
+// Cada linha: [descrição, cor, parâmetros, peão que anda (o outro da cor já está na casa), casa final, vez esperada].
+const DIVIDE_CASA = [
+  ['Vermelho sai da base para a saída ocupada', 'vermelho', { vermelho: 'c1,base,base,base', dados: '6' }, 2, 'c1', /^Vermelho$/],
+  ['Amarelo sai da base para a saída ocupada', 'amarelo', { vez: 'amarelo', amarelo: 'c27,base,base,base', dados: '6' }, 2, 'c27', /^Amarelo$/],
+  ['Amarelo anda até o peão da mesma cor', 'amarelo', { vez: 'amarelo', amarelo: 'c30,c34,base,base', dados: '4' }, 1, 'c34', /^Vermelho$/],
+];
+
+test.each(DIVIDE_CASA)('TC-LD-49 mesma cor divide a casa: %s', async (_descricao, cor, params, n, casa, vezEsperada) => {
+  await jogaPeao(params, cor, n);
+
+  const outra = cor === 'vermelho' ? 'amarelo' : 'vermelho';
+  confereCasas({ [cor]: [casa, casa, 'base', 'base'], [outra]: BASE });
+  expect(screen.getByTestId('vez')).toHaveTextContent(vezEsperada);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
