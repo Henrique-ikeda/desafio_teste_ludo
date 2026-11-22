@@ -241,6 +241,7 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | TC-LD-28 | Amarelo vence | `?vez=amarelo&amarelo=chegada,chegada,chegada,a5&dados=1`. Rolar; clicar `peao-amarelo-4` | `peao-amarelo-4` em `chegada`; `chegada-amarelo` = 4; `mensagem` = "Amarelo venceu!"; `btn-rolar` desabilitado |
 | TC-LD-29 | Nova partida depois da vitória | Cenário do TC-LD-21 (`?vermelho=chegada,chegada,chegada,v5&dados=1`; rolar; clicar `peao-vermelho-4`); clicar `btn-nova-partida` | Os 8 peões na base; `chegada-vermelho` = 0; `mensagem` vazia; `vez` = "Vermelho"; `btn-rolar` habilitado |
 | TC-LD-30 | Amarelo sai da base na saída ocupada pelo Vermelho | `?vez=amarelo&vermelho=c27,base,base,base&dados=6`. Rolar; clicar `peao-amarelo-1` | `peao-amarelo-1` e `peao-vermelho-1` os dois em `c27`; `vez` = "Amarelo" (tirou 6) |
+| TC-LD-36 | Nova partida com o Amarelo na vez | `?vez=amarelo&amarelo=c30,base,base,base&dados=6`. Rolar; clicar `peao-amarelo-1` (vai de `c30` para `c36`; tirou 6, o Amarelo continua na vez); clicar `btn-nova-partida` | Os 8 peões na base; `vez` = "Vermelho"; `dado` vazio; `chegada-vermelho` = 0 e `chegada-amarelo` = 0; `mensagem` vazia; `btn-rolar` habilitado; uma rolagem nova funciona (`dado` entre 1 e 6) |
 
 ## 6. Fluxo de trabalho no Git
 
