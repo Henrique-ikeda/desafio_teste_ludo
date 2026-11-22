@@ -116,3 +116,25 @@ test('TC-LD-15 estrela é segura', async () => {
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// TC-LD-16: vermelho 1 sai da base com dado 6 para c1, onde está o amarelo 1: saída é casa segura, não captura (seção 3, parâmetros vermelho, amarelo e dados).
+// O 6 tira o vermelho 1 da base para c1, a saída do Vermelho, onde está o amarelo 1; saída é casa segura: não há captura.
+const PARAMS_SAIDA_SEGURA = { amarelo: 'c1,base,base,base', dados: '6' };
+
+test('TC-LD-16 saída é segura', async () => {
+  // Vermelho 1 sai da base para c1, onde está o amarelo 1: como c1 é a saída, os dois ficam na casa e o vermelho joga de novo.
+  const user = await abrirJogo(PARAMS_SAIDA_SEGURA);
+  await rolar(user);
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('vermelho', 1));
+
+  confereCasas({
+    vermelho: ['c1', 'base', 'base', 'base'],
+    amarelo: ['c1', 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
