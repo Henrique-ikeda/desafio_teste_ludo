@@ -247,6 +247,7 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | TC-LD-39 | Captura com 6 dá jogada extra | `?vermelho=c2,base,base,base&amarelo=c8,base,base,base&dados=6`. Rolar; clicar `peao-vermelho-1` | `peao-vermelho-1` em `c8`; `peao-amarelo-1` volta para `base`; `vez` continua "Vermelho" (tirou 6) e `btn-rolar` habilitado |
 | TC-LD-40 | Captura de 3 e de 4 peões da mesma casa | Um jogo por linha (`test.each`): `?vermelho=c5,base,base,base&amarelo=c8,c8,c8,base&dados=3` e `?vermelho=c5,base,base,base&amarelo=c8,c8,c8,c8&dados=3`. Rolar; clicar `peao-vermelho-1` | Em cada linha: `peao-vermelho-1` em `c8` e todos os amarelos voltam para `base`; `vez` = "Amarelo" |
 | TC-LD-41 | Amarelo captura dois peões | `?vez=amarelo&amarelo=c50,base,base,base&vermelho=c3,c3,base,base&dados=5`. Rolar; clicar `peao-amarelo-1` | `peao-amarelo-1` em `c3`; `peao-vermelho-1` e `peao-vermelho-2` voltam para `base`; `vez` = "Vermelho" |
+| TC-LD-42 | Amarelo passa por cima sem capturar | `?vez=amarelo&amarelo=c50,base,base,base&vermelho=c2,base,base,base&dados=5`. Rolar; clicar `peao-amarelo-1` | `peao-amarelo-1` em `c3` (passou por `c2`); `peao-vermelho-1` continua em `c2`; `vez` = "Vermelho" |
 
 ## 6. Fluxo de trabalho no Git
 
