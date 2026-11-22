@@ -138,3 +138,24 @@ test('TC-LD-16 saída é segura', async () => {
   expect(screen.getByTestId('btn-rolar')).toBeEnabled();
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// TC-LD-17: vermelho 1 em c1 com dado 4 anda c2, c3, c4 e termina em c5, onde já está o vermelho 2 (seção 3, parâmetros vermelho e dados).
+// c2, c3, c4, c5 — o vermelho 1 termina em c5, onde já está o vermelho 2; peões da mesma cor dividem a casa e não há bloqueio.
+const PARAMS_MESMA_COR = { vermelho: 'c1,c5,base,base', dados: '4' };
+
+test('TC-LD-17 mesma cor divide a casa', async () => {
+  // Vermelho 1 anda de c1 para c5, onde está o vermelho 2: os dois ficam na casa, sem bloqueio e sem captura.
+  const user = await abrirJogo(PARAMS_MESMA_COR);
+  await rolar(user);
+
+  expect(peao('vermelho', 1)).toHaveAttribute('data-movel', 'true');
+
+  await user.click(peao('vermelho', 1));
+
+  confereCasas({
+    vermelho: ['c5', 'c5', 'base', 'base'],
+    amarelo: ['base', 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
