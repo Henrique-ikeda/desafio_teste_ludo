@@ -34,3 +34,39 @@ test('TC-LD-21 vitória', async () => {
   expect(screen.getByTestId('chegada-amarelo')).toHaveTextContent(/^0$/);
   expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Vermelho venceu!$/);
 });
+
+test('TC-LD-22 nada funciona após a vitória', async () => {
+  // Depois da vitória do Vermelho, o botão de rolar fica desabilitado e nenhum peão pode andar.
+  const user = await abrirJogo(PARAMS_VITORIA);
+  await rolar(user);
+  await user.click(peao('vermelho', 4));
+
+  // Pré-condição: a vitória aconteceu de fato, senão o teste não diz nada sobre "depois da vitória".
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Vermelho venceu!$/);
+  const vezAntes = screen.getByTestId('vez').textContent;
+  expect(vezAntes).toMatch(/^(Vermelho|Amarelo)$/);
+
+  expect(screen.getByTestId('btn-rolar')).toBeDisabled();
+  for (const cor of CORES) {
+    for (let n = 1; n <= 4; n++) {
+      expect(peao(cor, n)).toHaveAttribute('data-movel', 'false');
+    }
+  }
+
+  await rolar(user);
+
+  expect(screen.getByTestId('vez').textContent).toBe(vezAntes);
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^1$/);
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Vermelho venceu!$/);
+  expect(screen.getByTestId('btn-rolar')).toBeDisabled();
+
+  await user.click(peao('vermelho', 1));
+
+  confereCasas({
+    vermelho: ['chegada', 'chegada', 'chegada', 'chegada'],
+    amarelo: ['base', 'base', 'base', 'base'],
+  });
+  expect(screen.getByTestId('chegada-vermelho')).toHaveTextContent(/^4$/);
+  expect(screen.getByTestId('dado')).toHaveTextContent(/^1$/);
+  expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Vermelho venceu!$/);
+});
