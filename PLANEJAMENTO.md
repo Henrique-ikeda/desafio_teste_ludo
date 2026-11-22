@@ -180,7 +180,7 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | **A4** Mover no percurso | `henrique/a4-mover` | tests/movimento.spec.js | 06, 08, 09 |
 | **A5** Reta final e chegada | `henrique/a5-reta-final` | tests/movimento.spec.js | 10, 11, 12, 33, 34, 35 |
 
-**IDs extras (casos além dos 24 originais):** `TC-LD-25` a `TC-LD-30` ficam reservados para o Felipe; os do Henrique começam em `TC-LD-31`. Cada caso extra entra na seção 5, na matriz de cobertura e no README no mesmo PR do teste.
+**IDs extras (casos além dos 24 originais):** `TC-LD-25` a `TC-LD-30` ficam reservados para o Felipe; os do Henrique começam em `TC-LD-31`. **Tarefa F6 (lacunas de cobertura):** `TC-LD-36` a `TC-LD-55` ficam reservados ao Felipe; casos novos do Henrique a partir de agora usam `TC-LD-56` em diante. Cada caso extra entra na seção 5, na matriz de cobertura e no README no mesmo PR do teste.
 
 ### Felipe (tarefas F)
 
@@ -191,6 +191,7 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | **F3** Casas seguras | `felipe/f3-casas-seguras` | tests/captura.spec.js | 15, 16, 17 |
 | **F4** Vez e sem jogada | `felipe/f4-vez` | tests/vez.spec.js | 18, 19, 20 |
 | **F5** Vitória e nova partida | `felipe/f5-fim` | tests/fim-de-jogo.spec.js | 21, 22, 23, 24 |
+| **F6** Lacunas de cobertura (casos adicionais, validados contra mutantes) | `felipe/f6-lacunas` | tests/captura.spec.js, tests/vez.spec.js, tests/fim-de-jogo.spec.js e, nas áreas de sair da base e de mover, tests/dado-e-saida.spec.js e tests/movimento.spec.js | 36 a 55 (faixa reservada) |
 
 ## 5. Casos de teste (interface)
 
