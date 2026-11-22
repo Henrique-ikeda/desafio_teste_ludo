@@ -235,3 +235,26 @@ test('TC-LD-45 amarelo com 6 anda na pista e joga de novo', async () => {
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
   expect(screen.getByTestId('btn-rolar')).toBeEnabled();
 });
+
+// TC-LD-48: com os 8 peões na base, só o 6 tira peão da base. Os valores 1, 2, 4 e 5 não dão jogada
+// (o 3 é o TC-LD-03).
+test.each([1, 2, 4, 5])('TC-LD-48 só o 6 tira peão da base: dado %i', async (valor) => {
+  const user = await abrirJogo({ dados: String(valor) });
+  await rolar(user);
+
+  expect(screen.getByTestId('dado')).toHaveTextContent(new RegExp('^' + valor + '$'));
+
+  // A spec não diz se a vez passa na hora ou com atraso: espera a condição positiva.
+  await waitFor(() => {
+    expect(screen.getByTestId('mensagem')).toHaveTextContent(/^Sem jogada$/);
+    expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  });
+
+  for (const cor of CORES) {
+    for (let n = 1; n <= 4; n++) {
+      expect(peao(cor, n)).toHaveAttribute('data-movel', 'false');
+    }
+  }
+  const base = ['base', 'base', 'base', 'base'];
+  confereCasas({ vermelho: base, amarelo: base });
+});
