@@ -24,7 +24,7 @@ Regras completas, contrato da tela e divisão das tarefas: [PLANEJAMENTO.md](PLA
 | Nome | RA | GitHub | Parte no trabalho |
 |---|---|---|---|
 | Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto e casos de teste de início, dado, sair da base, mover, reta final e chegada (TC-LD-01 a 12 e 31 em diante) |
-| Felipe Galeti Gôngora | 24036480-2 | [FGaleti](https://github.com/FGaleti) | Tarefas F1–F5: CI, README e casos de teste de captura, casas seguras, vez, vitória e nova partida (TC-LD-13 a 24, mais os extras da faixa reservada 25–30) |
+| Felipe Galeti Gôngora | 24036480-2 | [FGaleti](https://github.com/FGaleti) | Tarefas F1–F5: CI, README e casos de teste de captura, casas seguras, vez, vitória e nova partida (TC-LD-13 a 30 e, na tarefa F6, TC-LD-36 a 49: lacunas de cobertura validadas contra mutantes) |
 
 As contribuições de cada um aparecem em **Insights → Contributors** e nos commits.
 
@@ -55,7 +55,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 - **Integração contínua:** o GitHub Actions ([`.github/workflows/testes.yml`](.github/workflows/testes.yml)) roda `npm ci` e `npm run verificar` em todo push e Pull Request, com Node 18, 20 e 22 no Ubuntu e no Windows, e publica como artefato o relatório JSON do Jest e a saída do verificador. O `npm run verificar:completo` roda à mão (*Run workflow*) ou em PR com o rótulo `entrega`.
 - **Os testes estão certos?** Falhar pelo motivo certo não prova que o resultado esperado está correto. Por isso os testes foram rodados, fora do repositório, contra uma implementação de referência (todos passam) e contra versões com um defeito de cada vez (todas são pegas): [validação dos testes do Henrique](docs/VALIDACAO-TESTES-HENRIQUE.md).
 
-## Casos de teste (35)
+## Casos de teste (49)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -94,6 +94,20 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 | TC-LD-28 | Amarelo vence | `tests/fim-de-jogo.spec.js` | `peao-amarelo-4` em `chegada`; `chegada-amarelo` = 4; `mensagem` = "Amarelo venceu!"; `btn-rolar` desabilitado | Felipe |
 | TC-LD-29 | Nova partida depois da vitória | `tests/fim-de-jogo.spec.js` | Os 8 peões na base; `chegada-vermelho` = 0; `mensagem` vazia; `vez` = "Vermelho"; `btn-rolar` habilitado | Felipe |
 | TC-LD-30 | Amarelo sai da base na saída ocupada pelo Vermelho | `tests/captura.spec.js` | `peao-amarelo-1` e `peao-vermelho-1` os dois em `c27`; `vez` = "Amarelo" (tirou 6) | Felipe |
+| TC-LD-36 | Nova partida com o Amarelo na vez | `tests/fim-de-jogo.spec.js` | Os 8 peões na base; `vez` = "Vermelho"; `dado` vazio; `chegada-vermelho` = 0 e `chegada-amarelo` = 0; `mensagem` vazia; `btn-rolar` habilitado; uma rolagem nova funciona (`dado` entre 1 e 6) | Felipe |
+| TC-LD-37 | Nova partida depois da vitória do Amarelo | `tests/fim-de-jogo.spec.js` | Os 8 peões na base; `chegada-amarelo` = 0 e `chegada-vermelho` = 0; `mensagem` vazia; `vez` = "Vermelho"; `dado` vazio; `btn-rolar` habilitado; uma rolagem nova funciona | Felipe |
+| TC-LD-38 | Clique em peão da cor que não está na vez | `tests/vez.spec.js` | Depois de rolar: `peao-vermelho-1` com `data-movel` = `true` e `peao-amarelo-1` com `false`. Depois do 1º clique: `peao-amarelo-1` continua em `c10`, `peao-vermelho-1` em `c1`, `vez` = "Vermelho" e `btn-rolar` desabilitado. Depois do 2º: `peao-vermelho-1` em `c4`; `peao-amarelo-1` em `c10`; `vez` = "Amarelo" | Felipe |
+| TC-LD-39 | Captura com 6 dá jogada extra | `tests/captura.spec.js` | `peao-vermelho-1` em `c8`; `peao-amarelo-1` volta para `base`; `vez` continua "Vermelho" (tirou 6) e `btn-rolar` habilitado | Felipe |
+| TC-LD-40 | Captura de 3 e de 4 peões da mesma casa | `tests/captura.spec.js` | Em cada linha: `peao-vermelho-1` em `c8` e todos os amarelos voltam para `base`; `vez` = "Amarelo" | Felipe |
+| TC-LD-41 | Amarelo captura dois peões | `tests/captura.spec.js` | `peao-amarelo-1` em `c3`; `peao-vermelho-1` e `peao-vermelho-2` voltam para `base`; `vez` = "Vermelho" | Felipe |
+| TC-LD-42 | Amarelo passa por cima sem capturar | `tests/captura.spec.js` | `peao-amarelo-1` em `c3` (passou por `c2`); `peao-vermelho-1` continua em `c2`; `vez` = "Vermelho" | Felipe |
+| TC-LD-43 | Estrela é segura para o Amarelo | `tests/captura.spec.js` | Em cada linha, os dois peões na estrela; nenhum volta para a base; `vez` = "Vermelho" | Felipe |
+| TC-LD-44 | Amarelo com seis e sem jogada passa a vez | `tests/vez.spec.js` | Os 4 amarelos com `data-movel` = `false` (a2 + 6 passa da chegada e não há peão na base); `mensagem` = "Sem jogada"; `vez` = "Vermelho"; `chegada-amarelo` = 3 | Felipe |
+| TC-LD-45 | Amarelo com 6 pode andar na pista | `tests/dado-e-saida.spec.js` | Depois de rolar: os 4 amarelos com `data-movel` = `true` e os vermelhos com `false`. Depois do clique: `peao-amarelo-1` em `c36`; os outros 3 amarelos e os vermelhos na base; `vez` = "Amarelo" (tirou 6) e `btn-rolar` habilitado | Felipe |
+| TC-LD-46 | "Sem jogada" some na jogada seguinte | `tests/vez.spec.js` | Depois da 1ª: `mensagem` = "Sem jogada"; `vez` = "Amarelo". Depois do clique: `peao-amarelo-1` em `c34`; `vez` = "Vermelho"; `mensagem` vazia | Felipe |
+| TC-LD-47 | Peão que passaria da chegada não anda ao ser clicado | `tests/movimento.spec.js` | Depois de rolar: `peao-vermelho-1` com `data-movel` = `false` e `peao-vermelho-2` com `true`. Depois do 1º clique: `peao-vermelho-1` continua em `v4`, `peao-vermelho-2` em `c10`, `vez` = "Vermelho", `btn-rolar` desabilitado e `chegada-vermelho` = 0. Depois do 2º: `peao-vermelho-2` em `c13`; `peao-vermelho-1` em `v4`; `vez` = "Amarelo" | Felipe |
+| TC-LD-48 | Só o 6 tira peão da base (1, 2, 4 e 5) | `tests/dado-e-saida.spec.js` | Em cada jogo: `dado` = o valor; `mensagem` = "Sem jogada"; `vez` = "Amarelo"; os 8 peões com `data-movel` = `false` e na `base` | Felipe |
+| TC-LD-49 | Mesma cor divide a casa na saída e com o Amarelo | `tests/captura.spec.js` | Em cada linha, os dois peões da cor na mesma casa (`c1`, `c27` e `c34`); nenhum volta para a base; `vez` = "Vermelho" (tirou 6), "Amarelo" (tirou 6) e "Vermelho" (tirou 4) | Felipe |
 
 **Validação dos casos de teste** (fora do repositório, contra uma implementação de referência e contra mutantes): [testes do Henrique](docs/VALIDACAO-TESTES-HENRIQUE.md) e [testes do Felipe](docs/VALIDACAO-TESTES-FELIPE.md).
 
