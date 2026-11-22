@@ -251,6 +251,7 @@ Cada integrante é **dono de arquivos de teste diferentes** (coluna "Arquivos").
 | TC-LD-43 | Estrela é segura para o Amarelo | Um jogo por linha (`test.each`). Amarelo anda 3 até a estrela onde está o `peao-vermelho-1` (`?vez=amarelo&amarelo=<origem>,base,base,base&vermelho=<estrela>,base,base,base&dados=3`): `c6` → `c9`, `c19` → `c22`, `c32` → `c35`, `c45` → `c48`. Rolar; clicar `peao-amarelo-1` | Em cada linha, os dois peões na estrela; nenhum volta para a base; `vez` = "Vermelho" |
 | TC-LD-44 | Amarelo com seis e sem jogada passa a vez | `?vez=amarelo&amarelo=a2,chegada,chegada,chegada&dados=6`. Rolar | Os 4 amarelos com `data-movel` = `false` (a2 + 6 passa da chegada e não há peão na base); `mensagem` = "Sem jogada"; `vez` = "Vermelho"; `chegada-amarelo` = 3 |
 | TC-LD-45 | Amarelo com 6 pode andar na pista | `?vez=amarelo&amarelo=c30,base,base,base&dados=6`. Rolar; clicar `peao-amarelo-1` | Depois de rolar: os 4 amarelos com `data-movel` = `true` e os vermelhos com `false`. Depois do clique: `peao-amarelo-1` em `c36`; os outros 3 amarelos e os vermelhos na base; `vez` = "Amarelo" (tirou 6) e `btn-rolar` habilitado |
+| TC-LD-46 | "Sem jogada" some na jogada seguinte | `?amarelo=c30,base,base,base&dados=3,4`. Rolar (Vermelho, sem jogada); rolar (Amarelo); clicar `peao-amarelo-1` | Depois da 1ª: `mensagem` = "Sem jogada"; `vez` = "Amarelo". Depois do clique: `peao-amarelo-1` em `c34`; `vez` = "Vermelho"; `mensagem` vazia |
 
 ## 6. Fluxo de trabalho no Git
 
