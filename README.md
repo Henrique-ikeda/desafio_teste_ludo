@@ -86,6 +86,8 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 | TC-LD-29 | Nova partida depois da vitória | `tests/fim-de-jogo.spec.js` | Os 8 peões na base; `chegada-vermelho` = 0; `mensagem` vazia; `vez` = "Vermelho"; `btn-rolar` habilitado | Felipe |
 | TC-LD-30 | Amarelo sai da base na saída ocupada pelo Vermelho | `tests/captura.spec.js` | `peao-amarelo-1` e `peao-vermelho-1` os dois em `c27`; `vez` = "Amarelo" (tirou 6) | Felipe |
 
+**Validação dos casos de teste** (fora do repositório, contra uma implementação de referência e contra mutantes): [testes do Henrique](docs/VALIDACAO-TESTES-HENRIQUE.md) e [testes do Felipe](docs/VALIDACAO-TESTES-FELIPE.md).
+
 ## Estrutura
 
 ```
@@ -95,5 +97,5 @@ tests/helpers.js              abrirJogo(), posições e dados fixos e atalhos
 tests/*.spec.js               casos de teste
 scripts/verificar-testes.mjs  verificador (npm run verificar e CI)
 PLANEJAMENTO.md               regras, contrato, tarefas e casos de teste
-docs/                         matriz de cobertura e TDD com IA
+docs/                         matriz de cobertura, TDD com IA e validação dos testes
 ```
