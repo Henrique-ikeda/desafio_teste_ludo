@@ -46,7 +46,7 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 - **Metodologia:** TDD, um caso de teste por vez: escrever, rodar, ver falhar pelo motivo certo e fazer o commit `test:`. Uso de IA documentado em [docs/TDD-COM-IA.md](docs/TDD-COM-IA.md).
 - **Integração contínua:** o GitHub Actions roda `npm ci` e `npm run verificar` em todo push e Pull Request.
 
-## Casos de teste (29)
+## Casos de teste (31)
 
 | ID | Cenário | Arquivo | Resultado esperado | Autor |
 |---|---|---|---|---|
@@ -79,6 +79,8 @@ npx jest tests/<arquivo>.spec.js -t "TC-LD-NN"   # um caso só
 | TC-LD-22 | Nada funciona após a vitória | `tests/fim-de-jogo.spec.js` | `btn-rolar` desabilitado; `mensagem` continua "Vermelho venceu!"; `vez` não muda ao clicar `btn-rolar` | Felipe |
 | TC-LD-23 | Nova partida | `tests/fim-de-jogo.spec.js` | Os 8 peões na base; `vez` = "Vermelho"; `dado` vazio; `chegada-vermelho` = 0; `mensagem` vazia; `btn-rolar` habilitado | Felipe |
 | TC-LD-24 | Peão na chegada não anda | `tests/fim-de-jogo.spec.js` | `peao-vermelho-1` com `data-movel` = `false` e continua em `chegada`; `peao-vermelho-2` com `data-movel` = `true` e vai para `c12` | Felipe |
+| TC-LD-26 | Amarelo captura (e cruza `c52` → `c1`) | `tests/captura.spec.js` | `peao-amarelo-1` em `c3`; `peao-vermelho-1` volta para `base`; `vez` = "Vermelho" | Felipe |
+| TC-LD-27 | Passar por cima não captura | `tests/captura.spec.js` | `peao-vermelho-1` em `c8`; `peao-amarelo-1` continua em `c6` (só captura quem termina na casa) | Felipe |
 
 ## Estrutura
 
