@@ -24,7 +24,7 @@ Regras completas, contrato da tela e divisão das tarefas: [PLANEJAMENTO.md](PLA
 | Nome | RA | GitHub | Parte no trabalho |
 |---|---|---|---|
 | Henrique Kendi Ikeda | 24039456-2 | [Henrique-ikeda](https://github.com/Henrique-ikeda) | Tarefas A1–A5: estrutura do projeto e casos de teste de início, dado, sair da base, mover, reta final e chegada (TC-LD-01 a 12 e 31 em diante) |
-| Felipe Galeti Gôngora | 24036480-2 | [FGaleti](https://github.com/FGaleti) | Tarefas F1–F5: CI, README e casos de teste de captura, casas seguras, vez, vitória e nova partida (TC-LD-13 a 30) |
+| Felipe Galeti Gôngora | 24036480-2 | [FGaleti](https://github.com/FGaleti) | Tarefas F1–F5: CI, README e casos de teste de captura, casas seguras, vez, vitória e nova partida (TC-LD-13 a 24, mais os extras da faixa reservada 25–30) |
 
 As contribuições de cada um aparecem em **Insights → Contributors** e nos commits.
 
