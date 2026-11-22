@@ -199,3 +199,39 @@ test('TC-LD-32 com 6 pode mover um peão do percurso em vez de sair', async () =
   // tirou 6: joga de novo
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
 });
+
+// ---- F6: lacunas de cobertura (TC-LD-45 e TC-LD-48) ----
+
+// Helper local: confere a casa dos 8 peões de uma vez (peões não citados ficam na base).
+function confereCasas(esperado) {
+  for (const cor of CORES) {
+    for (let n = 1; n <= 4; n++) {
+      expect(peao(cor, n)).toHaveAttribute('data-casa', esperado[cor][n - 1]);
+    }
+  }
+}
+
+// TC-LD-45: Amarelo com o peão 1 em c30 e os outros na base, dado 6: pode andar c30 -> c36 OU sair da base
+// (o mesmo que o TC-LD-32 faz com o Vermelho).
+const PARAMS_AMARELO_SEIS_NA_PISTA = { vez: 'amarelo', amarelo: 'c30,base,base,base', dados: '6' };
+
+test('TC-LD-45 amarelo com 6 anda na pista e joga de novo', async () => {
+  const user = await abrirJogo(PARAMS_AMARELO_SEIS_NA_PISTA);
+  await rolar(user);
+
+  // Depois de rolar: os 4 amarelos podem andar com o 6 (o 1 pelo percurso, os outros por saírem da base).
+  for (let n = 1; n <= 4; n++) {
+    expect(peao('amarelo', n)).toHaveAttribute('data-movel', 'true');
+    expect(peao('vermelho', n)).toHaveAttribute('data-movel', 'false');
+  }
+
+  await user.click(peao('amarelo', 1));
+
+  confereCasas({
+    vermelho: ['base', 'base', 'base', 'base'],
+    amarelo: ['c36', 'base', 'base', 'base'],
+  });
+  // tirou 6: joga de novo
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Amarelo$/);
+  expect(screen.getByTestId('btn-rolar')).toBeEnabled();
+});
