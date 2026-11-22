@@ -269,3 +269,15 @@ test('TC-LD-41 amarelo captura dois peões', async () => {
   expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
   expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
 });
+
+// TC-LD-42: o amarelo 1 em c50 anda 5 (c51, c52, c1, c2, c3) e passa por c2, onde está o vermelho 1, mas termina em c3.
+// Só captura quem termina na casa (o TC-LD-27 cobre o mesmo para o Vermelho).
+const PARAMS_AMARELO_PASSA_POR_CIMA = { vez: 'amarelo', amarelo: 'c50,base,base,base', vermelho: 'c2,base,base,base', dados: '5' };
+
+test('TC-LD-42 amarelo passa por cima sem capturar', async () => {
+  await jogaPeao(PARAMS_AMARELO_PASSA_POR_CIMA, 'amarelo');
+
+  confereCasas({ vermelho: ['c2', 'base', 'base', 'base'], amarelo: ['c3', 'base', 'base', 'base'] });
+  expect(screen.getByTestId('vez')).toHaveTextContent(/^Vermelho$/);
+  expect(screen.getByTestId('mensagem')).toBeEmptyDOMElement();
+});
